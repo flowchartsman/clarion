@@ -3,6 +3,8 @@ Clarion is a mostly-monochromatic, minimally-highlighted colorscheme, clearing
 away the rainbow madness and allowing you to concentrate on what matters the
 most: your code.
 
+![Clarion Preview](img/clarion-peach.jpg?raw=true)
+
 ## Guiding Principles
 
 ### Readability is Paramount
