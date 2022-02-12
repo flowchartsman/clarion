@@ -1,0 +1,31 @@
+{
+    "name": "clarion",
+    "displayName": "clarion",
+    "description": "A minimalist theme focusing on clarity and semantic content.",
+    "version": "0.0.1",
+    "engines": {
+        "vscode": "^1.55.0"
+    },
+    "categories": [
+        "Themes"
+    ],
+    "contributes": {
+        "themes": [
+            {
+                "label": "clarion",
+                "uiTheme": "vs",
+                "path": "./themes/clarion-color-theme.json"
+            },
+            {
+                "label": "clarion-orange",
+                "uiTheme": "vs",
+                "path": "./themes/clarion-color-theme-orange.json"
+            },
+            {
+                "label": "clarion-yellow",
+                "uiTheme": "vs",
+                "path": "./themes/clarion-color-theme-yellow.json"
+            }
+        ]
+    }
+}
