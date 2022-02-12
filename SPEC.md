@@ -4,7 +4,7 @@ This is the specification for Clarion. This file is parsed to generate the color
 It is based on an interpretation of the best research available to the author at the time of this writing.
 
 ## Background Colors
-Taken from The paper **Good Background Colors for Readers: A Study of People with and without Dyslexia**[[1]]. Peach was listed highest in both test groups, and is thus the default, though both of the others came quite close. Should further research necessitate changes, ordering and colors may change, too.
+Taken from the paper **Good Background Colors for Readers: A Study of People with and without Dyslexia**[[1]]. Peach was listed highest in both test groups, and is thus the default, though both of the others came quite close. Should further research necessitate changes, ordering and colors may change, too.
 
 ### Peach
 * Swatch: ![#edd1b0](https://via.placeholder.com/15/edd1b0/000000?text=+)
