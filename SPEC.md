@@ -7,18 +7,15 @@ It is based on an interpretation of the best research available to the author at
 Taken from [Good Background Colors for Readers: A Study of People with and without Dyslexia][1]. Peach was listed highest in both test groups, and is thus the default, though both of the others came quite close. Should further research necessitate changes, ordering and colors may change, too.
 
 ### Peach
-* Swatch: <span style="background-color:#edd1b0;border:2px solid black
-">&emsp;</span>
+* Swatch: ![#edd1b0](https://via.placeholder.com/15/edd1b0/000000?text=+)
 * Hex: #edd1b0
 
 ### Orange
-* Swatch: <span style="background-color:#eddd6e;border:2px solid black
-">&emsp;</span>
+* Swatch: ![#eddd6e](https://via.placeholder.com/15/eddd6e/000000?text=+)
 * Hex: #eddd6e
 
 ### Yellow
-* Swatch: <span style="background-color:#f8fd89;border:2px solid black
-">&emsp;</span>
+* Swatch: ![#f8fd89](https://via.placeholder.com/15/f8fd89/000000?text=+)
 * Hex: #f8fd89
 
 ## Foreground Colors
@@ -26,8 +23,7 @@ Taken from [Good Background Colors for Readers: A Study of People with and witho
 Black was chosen as the foreground color for its ubiqity and contrast and derived from the experimental methods in [[1]].
 
 ### Black
-* Swatch: <span style="background-color:#000000;border:2px solid black
-">&emsp;</span>
+* Swatch: ![#000000](https://via.placeholder.com/15/000000/000000?text=+)
 * Hex: #000000
 
 ## Conceptual Colors
@@ -42,8 +38,7 @@ Therefore personal bias towards "notable concepts" and "good concept:color conco
 If more concrete sources to inform either the chromatic or conceptual palettes are found, they will be incorporated without hesitation.
 
 ### Problem
-* Swatch: <span style="background-color:#c31a31;border:2px solid black
-">&emsp;</span>
+* Swatch: ![#c31a31](https://via.placeholder.com/15/c31a31/000000?text=+)
 * Hex: #c31a31
 
 #### Rationale
@@ -54,8 +49,7 @@ TBD
 * fatal problems
 
 ### Notice
-* Swatch: <span style="background-color:#d47a37;border:2px solid black
-">&emsp;</span>
+* Swatch: ![#d47a3](https://via.placeholder.com/15/d47a3/000000?text=+)
 * Hex: #d47a37
 
 #### Rationale
@@ -67,8 +61,7 @@ TBD
 * failed tests
 
 ### Affirm
-* Swatch: <span style="background-color:#769d31;border:2px solid black
-">&emsp;</span>
+* Swatch: ![#769d31](https://via.placeholder.com/15/769d31/000000?text=+)
 * Hex: #769d31
 
 #### Rationale
@@ -80,8 +73,7 @@ Note: not for passing tests. Failure is notable. Success is not.
 * successes when contrast with failure is notable
 
 ### Meta
-* Swatch: <span style="background-color:#6e5fae;border:2px solid black
-">&emsp;</span>
+* Swatch: ![#6e5fae](https://via.placeholder.com/15/6e5fae/000000?text=+)
 * Hex: #6e5fae
 
 #### Rationale
@@ -91,8 +83,7 @@ TBD
 * Comments and non-code annotations
 
 ### Modified
-* Swatch: <span style="background-color:#b76f7c;border:2px solid black
-">&emsp;</span>
+* Swatch: ![#b76f7c](https://via.placeholder.com/15/b76f7c/000000?text=+)
 * Hex: #b76f7c
 
 #### Rationale
@@ -102,8 +93,7 @@ TBD
 * Diff modifications
 
 ### Added
-* Swatch: <span style="background-color:#1a8298;border:2px solid black
-">&emsp;</span>
+* Swatch: ![#1a8298](https://via.placeholder.com/15/1a8298/000000?text=+)
 * Hex: :#1a8298
 
 #### Rationale
@@ -113,8 +103,7 @@ TBD
 * Diff additions
 
 ### Removed
-* Swatch: <span style="background-color:#cccccc;border:2px solid black
-">&emsp;</span>
+* Swatch: ![#cccccc](https://via.placeholder.com/15/cccccc/000000?text=+)
 * Hex: :#cccccc
 
 #### Rationale
