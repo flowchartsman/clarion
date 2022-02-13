@@ -1,14 +1,18 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"html/template"
 	"log"
 	"math"
 	"os"
 	"path/filepath"
+	"strings"
+	"time"
 
 	"github.com/lucasb-eyer/go-colorful"
+	"github.com/radovskyb/watcher"
 	//"text/template"
 )
 
@@ -17,13 +21,6 @@ import (
 // value of 1.0 represents a "just noticeable difference".
 // ref:  https://en.wikipedia.org/wiki/Color_difference#CIEDE2000
 
-// ΔETarget is the target perceptual distance we want to achieve for each
-// permutation of a color. The color's L value is increased by LStep until this is achieved.
-var ΔETarget = 3.0
-
-const LStep = 0.1
-const NumVariations = 6
-
 type renderTable struct {
 	bgColors,
 	bgColorsTerm map[string][]string
@@ -31,6 +28,14 @@ type renderTable struct {
 	fgColorsTerm []string
 	conceptColors,
 	conceptColorsTerm map[string]string
+}
+
+func themeLog(format string, v ...interface{}) {
+	log.Printf("mktheme: "+format, v...)
+}
+
+func themeLogErr(err error) {
+	log.Fatalf("mktheme error: %s", err)
 }
 
 func newRenderTable() renderTable {
@@ -44,23 +49,53 @@ func newRenderTable() renderTable {
 	}
 }
 
-func generateVariations(spec *spec, baseColorStr string, numVariations int, lighter bool) (hexVariations []string, termVariations []string, err error) {
+type adjustmentDirection int
+
+const (
+	_ adjustmentDirection = iota
+	lighter
+	darker
+	both
+)
+
+func rev(s []string) {
+	for i := len(s)/2 - 1; i >= 0; i-- {
+		opp := len(s) - 1 - i
+		s[i], s[opp] = s[opp], s[i]
+	}
+}
+
+func generateVariations(baseColorStr string, variations int, ΔETarget float64, LStep float64, direction adjustmentDirection) (hexVariations []string, termVariations []string, err error) {
+	if direction == both {
+		variations /= 2
+		hvl, tvl, err := generateVariations(baseColorStr, variations, ΔETarget, LStep, lighter)
+		if err != nil {
+			return nil, nil, err
+		}
+		hvd, tvd, err := generateVariations(baseColorStr, variations, ΔETarget, LStep, darker)
+		if err != nil {
+			return nil, nil, err
+		}
+		rev(hvd)
+		rev(tvd)
+		return append(hvd, hvl[1:]...), append(tvd, tvl[1:]...), nil
+	}
 	baseColor, _ := colorful.Hex(baseColorStr)
-	hexVariations = make([]string, numVariations)
-	termVariations = make([]string, numVariations)
+	hexVariations = make([]string, variations)
+	termVariations = make([]string, variations)
 	lastVariation := baseColor
-	for i := 0; i < NumVariations; i++ {
+	for i := 0; i < variations; i++ {
 		variation := lastVariation
 		if i == 0 {
 			variation = baseColor
 		} else {
 			var distance float64
-			for distance < spec.ΔETarget {
+			for distance < ΔETarget {
 				l, a, b := variation.Lab()
-				if lighter {
-					l += spec.lStep
+				if direction == lighter {
+					l += LStep
 				} else {
-					l -= spec.lStep
+					l -= LStep
 				}
 				switch {
 				case l >= 100:
@@ -82,31 +117,69 @@ func generateVariations(spec *spec, baseColorStr string, numVariations int, ligh
 
 func main() {
 	log.SetFlags(0)
-	if len(os.Args) != 3 {
+	var watchFiles bool
+	flag.BoolVar(&watchFiles, "watch", false, "watch files for changes and rebuild theme")
+	flag.Parse()
+	if len(flag.Args()) != 2 {
 		log.Fatalf("usage: mktheme <spec markdown file> <output directory>")
 	}
-	spec, err := loadSpec(os.Args[1])
-	if err != nil {
-		log.Fatalf("error loading specification: %s", err)
+	specPath := flag.Args()[0]
+	outputPath := flag.Args()[1]
+	themeLog("building themes...")
+	if err := buildThemes(specPath, outputPath); err != nil {
+		themeLogErr(err)
 	}
-	outputDir := os.Args[2]
+	themeLog("complete!")
+	if watchFiles {
+		themeLog("watching for changes...")
+		w := watcher.New()
+		w.SetMaxEvents(1)
+		w.FilterOps(watcher.Write)
+		w.Add("../SPEC.md")
+		w.Add("clarion-color-theme.json.tmpl")
+		go func() {
+			for {
+				select {
+				case <-w.Event:
+					themeLog("rebuilding themes...")
+					if err := buildThemes(specPath, outputPath); err != nil {
+						themeLogErr(err)
+					}
+					themeLog("complete!")
+				case err := <-w.Error:
+					themeLogErr(err)
+				case <-w.Closed:
+					return
+				}
+			}
+		}()
+		if err := w.Start(time.Millisecond * 500); err != nil {
+			log.Fatalln(err)
+		}
+	}
+}
 
-	log.Println("generating color permutations")
+func buildThemes(specPath string, outputPath string) error {
+	spec, err := loadSpec(specPath)
+	if err != nil {
+		return fmt.Errorf("error loading specification: %s", err)
+	}
+
 	renderTable := newRenderTable()
 
 	for baseColorName, baseColor := range spec.baseColors {
-		hexVariations, termVariations, err := generateVariations(spec, baseColor, NumVariations, true)
+		hexVariations, termVariations, err := generateVariations(baseColor, spec.variations, spec.ΔETarget, spec.Lstep, both)
 		if err != nil {
-			log.Fatalf("error generating variations for base color %s: %s", baseColorName, err)
+			return fmt.Errorf("error generating variations for base color %s: %s", baseColorName, err)
 		}
 		renderTable.bgColors[baseColorName] = hexVariations
 		renderTable.bgColorsTerm[baseColorName] = termVariations
 	}
 
 	{
-		fgVariationsHex, fgVariationsTerm, err := generateVariations(spec, spec.fgColor, NumVariations, true)
+		fgVariationsHex, fgVariationsTerm, err := generateVariations(spec.fgColor, spec.variations, spec.ΔETarget, spec.Lstep, lighter)
 		if err != nil {
-			log.Fatalf("error generating variations for foreground color: %s", err)
+			return fmt.Errorf("error generating variations for foreground color: %s", err)
 		}
 		renderTable.fgColors = fgVariationsHex
 		renderTable.fgColorsTerm = fgVariationsTerm
@@ -118,29 +191,29 @@ func main() {
 		renderTable.conceptColorsTerm[conceptColorName] = toTerminal(conceptColor)
 	}
 
-	log.Printf("%#v\n", renderTable)
-
 	for i, baseColor := range spec.themeBases {
-		themeSuffix := baseColor
+		themeSuffix := "-" + strings.ToLower(baseColor)
 		if i == 0 {
 			themeSuffix = ""
 		}
 		// Create Template functions
 		colorFuncs := template.FuncMap{
 			"themeName": func() string {
-				return themeSuffix
+				return "Clarion " + baseColor
 			},
-			"bg": func(i int) string {
-				return renderTable.bgColors[baseColor][i]
+			"bg": func(offset int) string {
+				center := len(renderTable.bgColors[baseColor]) / 2
+				return renderTable.bgColors[baseColor][center+offset]
 			},
-			"bg256": func(i int) string {
-				return renderTable.bgColorsTerm[baseColor][i]
+			"bg256": func(offset int) string {
+				center := len(renderTable.bgColorsTerm[baseColor]) / 2
+				return renderTable.bgColorsTerm[baseColor][center+offset]
 			},
-			"fg": func(i int) string {
-				return renderTable.fgColors[i]
+			"fg": func(offset int) string {
+				return renderTable.fgColors[offset]
 			},
-			"fg256": func(i int) string {
-				return renderTable.fgColorsTerm[i]
+			"fg256": func(offset int) string {
+				return renderTable.fgColorsTerm[offset]
 			},
 			"alpha": func(pct int, c string) string {
 				// add alpha in hex from range of 0-100%
@@ -155,19 +228,20 @@ func main() {
 				return renderTable.conceptColorsTerm[conceptColorName]
 			}
 		}
-		themeName := `clarion-color-theme` + themeSuffix
-		outPath := filepath.Join(outputDir, themeName+`.json`)
+		themeFilename := fmt.Sprintf("clarion-color-theme%s.json", themeSuffix)
+		outPath := filepath.Join(outputPath, themeFilename)
 		outFile, err := os.Create(outPath)
 		if err != nil {
-			log.Fatalf("unable to create output file %q: %v", outPath, err)
+			return fmt.Errorf("unable to create output file %q: %v", outPath, err)
 		}
+		defer outFile.Close()
 		tmpl, err := template.New("").Funcs(colorFuncs).ParseFiles("clarion-color-theme.json.tmpl")
 		if err != nil {
-			log.Fatalf("template parse error: %v", err)
+			return fmt.Errorf("template parse error: %v", err)
 		}
 		if err := tmpl.ExecuteTemplate(outFile, "clarion-color-theme.json.tmpl", nil); err != nil {
-			log.Fatalf("template execution error: %v", err)
+			return fmt.Errorf("template execution error: %v", err)
 		}
 	}
-	// log.Printf("%#v\n", scheme)
+	return nil
 }

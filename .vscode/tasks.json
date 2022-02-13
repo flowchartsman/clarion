@@ -2,30 +2,53 @@
     "version": "2.0.0",
     "tasks": [
         {
+            "label": "Build_Mktheme",
             "type": "shell",
-            "isBackground": true,
-            "label": "watch",
-            "command": "reflex",
+            "options": {
+                "cwd": "${workspaceFolder}/mktheme"
+            },
+            "command": "go",
             "args": [
-                "-d", "none",
-                "-r", "'mktheme/.*(tmpl|go)$'",
-                "--",
-                "sh",
-                "-c",
-                "cd mktheme && go run main.go ../themes" 
+                "build",
+            ],
+            "problemMatcher": [
+                "$go",
+            ]
+        },
+        {
+            "label": "Watch_Theme",
+            "dependsOn": [
+                "Build_Theme",
+            ],
+            "dependsOrder": "sequence",
+            "type": "shell",
+            "options": {
+                "cwd": "${workspaceFolder}/mktheme"
+            },
+            "isBackground": true,
+            "command": "./mktheme",
+            "args": [
+                "-watch",
+                "../SPEC.md",
+                "../themes" 
             ],
             "problemMatcher": {
-                "owner": "reflex",
+                "owner": "mktheme",
                 "fileLocation": ["relative", "${workspaceFolder}"],
                 "pattern":{
-                    "regexp": "^NEVER SEE THIS$",
-                }
+                    "regexp": "^mktheme error:",
+                },
+                "background": {
+                    "activeOnStart": true,
+                    "beginsPattern": "building themes...",
+                    "endsPattern": "complete!",
+                },
             }
         },
         {
-            "label": "stop watch",
+            "label": "Watch_Theme_Stop",
             "type": "shell",
-            "command": "killall reflex"
+            "command": "killall mktheme"
         },
     ]
 }

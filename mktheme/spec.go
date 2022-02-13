@@ -14,7 +14,7 @@ type spec struct {
 	baseColors    map[string]string
 	conceptColors map[string]string
 	ΔETarget      float64
-	lStep         float64
+	Lstep         float64
 	variations    int
 }
 
@@ -57,7 +57,7 @@ func loadSpec(specPath string) (*spec, error) {
 				if err != nil {
 					return nil, fmt.Errorf("couldn't parse LStep as float: %s", err)
 				}
-				spec.lStep = f / 100
+				spec.Lstep = f / 100
 			case "Variations:":
 				i, err := strconv.Atoi(fields[2])
 				if err != nil {
