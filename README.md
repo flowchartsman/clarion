@@ -8,6 +8,8 @@ most: your code.
 ## Guiding Principles
 
 ### Readability is Paramount
+Programmers spend the majority of their careers looking at text. Your eyes are an important resource, so a good colorscheme should be as readable as possible, minimizing eyestrain and maximizing comprehension.
+
 Clarion is inspired by research on readability and color, and seeks to put this research to the test. See [the specification](SPEC.md) for more information.
 
 ### Minimal Color Highlighting
