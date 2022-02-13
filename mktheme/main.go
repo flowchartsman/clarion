@@ -8,75 +8,154 @@ import (
 	"os"
 	"path/filepath"
 
-	//"text/template"
 	"github.com/lucasb-eyer/go-colorful"
+	//"text/template"
 )
 
-/* Named colors taken from colorgorial implementation at:
-http://vrl.cs.brown.edu/color
+// CIELAB ΔE* is the latest iteration of the CIE's color distance function, and
+// is intended to meaure the perceived distance between two colors, where a
+// value of 1.0 represents a "just noticeable difference".
+// ref:  https://en.wikipedia.org/wiki/Color_difference#CIEDE2000
 
-With all sliders maxed out.
-Cite:
-@article{gramazio-2017-ccd,
-  author={Gramazio, Connor C. and Laidlaw, David H. and Schloss, Karen B.},
-  journal={IEEE Transactions on Visualization and Computer Graphics},
-  title={Colorgorical: creating discriminable and preferable color palettes for information visualization},
-  year={2017}
+// ΔETarget is the target perceptual distance we want to achieve for each
+// permutation of a color. The color's L value is increased by LStep until this is achieved.
+var ΔETarget = 3.0
+
+const LStep = 0.1
+const NumVariations = 6
+
+type renderTable struct {
+	bgColors,
+	bgColorsTerm map[string][]string
+	fgColors,
+	fgColorsTerm []string
+	conceptColors,
+	conceptColorsTerm map[string]string
 }
-*/
+
+func newRenderTable() renderTable {
+	return renderTable{
+		bgColors:          map[string][]string{},
+		bgColorsTerm:      map[string][]string{},
+		fgColors:          []string{},
+		fgColorsTerm:      []string{},
+		conceptColors:     map[string]string{},
+		conceptColorsTerm: map[string]string{},
+	}
+}
+
+func generateVariations(spec *spec, baseColorStr string, numVariations int, lighter bool) (hexVariations []string, termVariations []string, err error) {
+	baseColor, _ := colorful.Hex(baseColorStr)
+	hexVariations = make([]string, numVariations)
+	termVariations = make([]string, numVariations)
+	lastVariation := baseColor
+	for i := 0; i < NumVariations; i++ {
+		variation := lastVariation
+		if i == 0 {
+			variation = baseColor
+		} else {
+			var distance float64
+			for distance < spec.ΔETarget {
+				l, a, b := variation.Lab()
+				if lighter {
+					l += spec.lStep
+				} else {
+					l -= spec.lStep
+				}
+				switch {
+				case l >= 100:
+					return nil, nil, fmt.Errorf("L overflow for variant %d", i)
+				case l <= 0:
+					return nil, nil, fmt.Errorf("L underflow for variant %d", i)
+				}
+				variation = colorful.Lab(l, a, b)
+				distance = lastVariation.DistanceCIEDE2000(variation)
+			}
+		}
+		variation = variation.Clamped()
+		hexVariations[i] = variation.Hex()
+		termVariations[i] = toTerminal(variation)
+		lastVariation = variation
+	}
+	return hexVariations, termVariations, nil
+}
 
 func main() {
 	log.SetFlags(0)
-	baseColorsHex := map[string]string{
-		"":       "#EDD1B0",
-		"orange": "#EDDD6E",
-		"yellow": "#F8FD89",
+	if len(os.Args) != 3 {
+		log.Fatalf("usage: mktheme <spec markdown file> <output directory>")
 	}
-	fgHex := "#000000"
-
-	if len(os.Args) < 2 || os.Args[1] == "" {
-		log.Fatal("usage: mktheme <output directory>")
+	spec, err := loadSpec(os.Args[1])
+	if err != nil {
+		log.Fatalf("error loading specification: %s", err)
 	}
-	outputDir := os.Args[1]
+	outputDir := os.Args[2]
 
-	scheme := map[string]string{
-		"problem":  "#c31a31",
-		"notice":   "#d47a37",
-		"affirm":   "#769d31",
-		"meta":     "#6e5fae",
-		"modified": "#b76f7c",
-		"added":    "#1a8298",
-		"removed":  "#cccccc",
-	}
+	log.Println("generating color permutations")
+	renderTable := newRenderTable()
 
-	for baseName, bgHex := range baseColorsHex {
-		scheme["name"] = baseName
-		bg, err := colorful.Hex(bgHex)
+	for baseColorName, baseColor := range spec.baseColors {
+		hexVariations, termVariations, err := generateVariations(spec, baseColor, NumVariations, true)
 		if err != nil {
-			log.Fatalf("%q is not a valid hex color", bgHex)
+			log.Fatalf("error generating variations for base color %s: %s", baseColorName, err)
 		}
-		fg, err := colorful.Hex(fgHex)
+		renderTable.bgColors[baseColorName] = hexVariations
+		renderTable.bgColorsTerm[baseColorName] = termVariations
+	}
+
+	{
+		fgVariationsHex, fgVariationsTerm, err := generateVariations(spec, spec.fgColor, NumVariations, true)
 		if err != nil {
-			log.Fatalf("%q is not a valid hex color", fgHex)
+			log.Fatalf("error generating variations for foreground color: %s", err)
 		}
-		bgl, bga, bgb := bg.Lab()
-		fgl, fga, fgb := fg.Lab()
+		renderTable.fgColors = fgVariationsHex
+		renderTable.fgColorsTerm = fgVariationsTerm
+	}
+
+	for conceptColorName, conceptColorStr := range spec.conceptColors {
+		conceptColor, _ := colorful.Hex(conceptColorStr)
+		renderTable.conceptColors[conceptColorName] = conceptColor.Hex()
+		renderTable.conceptColorsTerm[conceptColorName] = toTerminal(conceptColor)
+	}
+
+	log.Printf("%#v\n", renderTable)
+
+	for i, baseColor := range spec.themeBases {
+		themeSuffix := baseColor
+		if i == 0 {
+			themeSuffix = ""
+		}
+		// Create Template functions
 		colorFuncs := template.FuncMap{
+			"themeName": func() string {
+				return themeSuffix
+			},
 			"bg": func(i int) string {
-				return colorful.Lab(bgl-float64(i)*0.06, bga, bgb).Hex()
+				return renderTable.bgColors[baseColor][i]
+			},
+			"bg256": func(i int) string {
+				return renderTable.bgColorsTerm[baseColor][i]
 			},
 			"fg": func(i int) string {
-				return colorful.Lab(fgl+float64(i)*0.06, fga, fgb).Hex()
+				return renderTable.fgColors[i]
+			},
+			"fg256": func(i int) string {
+				return renderTable.fgColorsTerm[i]
 			},
 			"alpha": func(pct int, c string) string {
 				// add alpha in hex from range of 0-100%
 				return fmt.Sprintf("%s%02x", c, int(math.Round(float64(pct)*255.0/100.0)))
 			},
 		}
-		themeName := `clarion-color-theme`
-		if baseName != "" {
-			themeName += `-` + baseName
+		for conceptColorName := range spec.conceptColors {
+			colorFuncs[conceptColorName] = func() string {
+				return renderTable.conceptColors[conceptColorName]
+			}
+			colorFuncs[conceptColorName+"256"] = func() string {
+				return renderTable.conceptColorsTerm[conceptColorName]
+			}
 		}
+		themeName := `clarion-color-theme` + themeSuffix
 		outPath := filepath.Join(outputDir, themeName+`.json`)
 		outFile, err := os.Create(outPath)
 		if err != nil {
@@ -86,10 +165,9 @@ func main() {
 		if err != nil {
 			log.Fatalf("template parse error: %v", err)
 		}
-		if err := tmpl.ExecuteTemplate(outFile, "clarion-color-theme.json.tmpl", scheme); err != nil {
+		if err := tmpl.ExecuteTemplate(outFile, "clarion-color-theme.json.tmpl", nil); err != nil {
 			log.Fatalf("template execution error: %v", err)
 		}
 	}
-
 	// log.Printf("%#v\n", scheme)
 }
