@@ -21,7 +21,7 @@ A specification keeps things centralized and consistent. Inspired by the [Dracul
 ### Conceptual Palette
 Rather than simply picking values from a color palette and arbitrarily assigning them to syntax or UI elements, Clarion seeks to define a "conceptual palette", where each color has a specific meaning that applies consistently across contexts.
 
-If you see `problem` <span style="background-color:#c31a31;border:2px solid black">&emsp;</span>, there is a serious problem of some kind within that context. Similarly, if you see `added` <span style="background-color:#1a8298;border:2px solid black">&emsp;</span>, something has been added or is otherwise "new". Correspondingly, if something doesn't have a spceial meaning, it will not have a color. 
+If you see `problem`![problem swatch](https://via.placeholder.com/15/b50000.png?text=+), there is a serious problem of some kind within that context. Similarly, if you see `new`![new swatch](https://via.placeholder.com/15/4b6319.png?text=+), something has been added or is otherwise "new". Correspondingly, if something doesn't have a spceial meaning, it will not have a color. 
 
 ## Status
 Clarion is an untested proof-of-concept, and very much a work in progress. The specification is very bare-bones and its format and content will likely change as more values are codified into it. These include such things that currently only exist in templates or the spec generation code, such as CIELAB offset formulas and editor-specific styling identifiers.
