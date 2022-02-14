@@ -4,6 +4,10 @@
         {
             "label": "Build_Mktheme",
             "type": "shell",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
             "options": {
                 "cwd": "${workspaceFolder}/mktheme"
             },
@@ -18,7 +22,7 @@
         {
             "label": "Watch_Theme",
             "dependsOn": [
-                "Build_Theme",
+                "Build_Mktheme",
             ],
             "dependsOrder": "sequence",
             "type": "shell",
