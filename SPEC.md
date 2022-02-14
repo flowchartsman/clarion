@@ -27,9 +27,11 @@ Black was chosen as the foreground color for its ubiqity and contrast and derive
 * Hex: #000000
 
 ## Color Permutations
-* ΔETarget: 4
+* ΔETarget: 2
 * LStep: 0.01
-* Variations: 6
+* Variations: 10
+* ΔETargetFG: 10
+* VariationsFG: 4
 
 To generate lighter or darker variants, colors are translated along the L (lightniess) axis of the CIELAB color space until they are "noticeably different", as measured by the CIE Distance metric ΔE* derived using CIEDE2000.[[2]][[3]]
 
@@ -92,15 +94,14 @@ TBD
 * modified files
 
 ### Excluded
-* Swatch: ![excluded swatch](https://via.placeholder.com/15/555555.png?text=+)
-* Sample: ![excluded sample](https://via.placeholder.com/150x50/edd1b0/555555.png?text=Excluded)
-* Hex: #555555
+* Swatch: ![excluded swatch](https://via.placeholder.com/15/886288.png?text=+)
+* Sample: ![excluded sample](https://via.placeholder.com/150x50/edd1b0/886288.png?text=Excluded)
+* Hex: #886288
 
 #### Rationale
 TBD
 
 #### Example Usage
-* Comments
 * Ignored files
 * Diff removals
 * Skipped tests

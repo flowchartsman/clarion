@@ -14,8 +14,10 @@ type spec struct {
 	baseColors    map[string]string
 	conceptColors map[string]string
 	ΔETarget      float64
+	ΔETargetFG    float64
 	Lstep         float64
 	variations    int
+	variationsFG  int
 }
 
 // primitive, expect-like scanner that only works because markdown is easy. If
@@ -48,10 +50,16 @@ func loadSpec(specPath string) (*spec, error) {
 			case "ΔETarget:":
 				f, err := strconv.ParseFloat(fields[2], 64)
 				if err != nil {
-					return nil, fmt.Errorf("couldn't parse DeltaETarget as float: %s", err)
+					return nil, fmt.Errorf("couldn't parse ΔETarget as float: %s", err)
 				}
 				spec.ΔETarget = f / 100 //apparently the colorful library is a
 				//couple orders of magnitude smaller than the literature
+			case "ΔETargetFG:":
+				f, err := strconv.ParseFloat(fields[2], 64)
+				if err != nil {
+					return nil, fmt.Errorf("couldn't parse ΔETargetFG as float: %s", err)
+				}
+				spec.ΔETargetFG = f / 100
 			case "LStep:":
 				f, err := strconv.ParseFloat(fields[2], 64)
 				if err != nil {
@@ -64,6 +72,12 @@ func loadSpec(specPath string) (*spec, error) {
 					return nil, fmt.Errorf("couldn't parse Variations as int")
 				}
 				spec.variations = i
+			case "VariationsFG:":
+				i, err := strconv.Atoi(fields[2])
+				if err != nil {
+					return nil, fmt.Errorf("couldn't parse VariationsFG as int")
+				}
+				spec.variationsFG = i
 			case "Hex:":
 				switch section {
 				case "Background Colors":
@@ -72,7 +86,7 @@ func loadSpec(specPath string) (*spec, error) {
 				case "Foreground Colors":
 					spec.fgColor = fields[2]
 				case "Conceptual Colors":
-					spec.conceptColors[target] = fields[2]
+					spec.conceptColors[strings.ToLower(target)] = fields[2]
 				}
 			}
 		}
