@@ -34,7 +34,11 @@ func themeLog(format string, v ...interface{}) {
 	log.Printf("mktheme: "+format, v...)
 }
 
-func themeLogErr(err error) {
+func themeLogErr(format string, v ...interface{}) {
+	log.Printf("mktheme error: "+format, v...)
+}
+
+func themeLogFatal(err error) {
 	log.Fatalf("mktheme error: %s", err)
 }
 
@@ -64,6 +68,11 @@ func rev(s []string) {
 		s[i], s[opp] = s[opp], s[i]
 	}
 }
+
+const (
+	errColor    = `#FF00FF`
+	errColor256 = `201`
+)
 
 func generateVariations(baseColorStr string, variations int, ΔETarget float64, LStep float64, direction adjustmentDirection) (hexVariations []string, termVariations []string, err error) {
 	if direction == both {
@@ -127,7 +136,7 @@ func main() {
 	outputPath := flag.Args()[1]
 	themeLog("building themes...")
 	if err := buildThemes(specPath, outputPath); err != nil {
-		themeLogErr(err)
+		themeLogFatal(err)
 	}
 	themeLog("complete!")
 	if watchFiles {
@@ -136,18 +145,18 @@ func main() {
 		w.SetMaxEvents(1)
 		w.FilterOps(watcher.Write)
 		w.Add("../SPEC.md")
-		w.Add("clarion-color-theme.json.tmpl")
+		w.Add("clarion-color-theme.json")
 		go func() {
 			for {
 				select {
 				case <-w.Event:
 					themeLog("rebuilding themes...")
 					if err := buildThemes(specPath, outputPath); err != nil {
-						themeLogErr(err)
+						themeLogFatal(err)
 					}
 					themeLog("complete!")
 				case err := <-w.Error:
-					themeLogErr(err)
+					themeLogFatal(err)
 				case <-w.Closed:
 					return
 				}
@@ -177,7 +186,7 @@ func buildThemes(specPath string, outputPath string) error {
 	}
 
 	{
-		fgVariationsHex, fgVariationsTerm, err := generateVariations(spec.fgColor, spec.variations, spec.ΔETarget, spec.Lstep, lighter)
+		fgVariationsHex, fgVariationsTerm, err := generateVariations(spec.fgColor, spec.variationsFG, spec.ΔETargetFG, spec.Lstep, lighter)
 		if err != nil {
 			return fmt.Errorf("error generating variations for foreground color: %s", err)
 		}
@@ -203,16 +212,34 @@ func buildThemes(specPath string, outputPath string) error {
 			},
 			"bg": func(offset int) string {
 				center := len(renderTable.bgColors[baseColor]) / 2
-				return renderTable.bgColors[baseColor][center+offset]
+				idx := center + offset
+				if idx < 0 || idx >= len(renderTable.bgColors[baseColor]) {
+					themeLogErr("bg idx out of range: offset: %d idx: %d", offset, idx)
+					return errColor
+				}
+				return renderTable.bgColors[baseColor][idx]
 			},
 			"bg256": func(offset int) string {
 				center := len(renderTable.bgColorsTerm[baseColor]) / 2
-				return renderTable.bgColorsTerm[baseColor][center+offset]
+				idx := center + offset
+				if idx < 0 || idx >= len(renderTable.bgColorsTerm[baseColor]) {
+					themeLogErr("bg256 idx out of range: offset: %d idx: %d", offset, idx)
+					return errColor256
+				}
+				return renderTable.bgColorsTerm[baseColor][idx]
 			},
 			"fg": func(offset int) string {
+				if offset < 0 || offset >= len(renderTable.fgColors) {
+					themeLogErr("fg offset out of range: %d", offset)
+					return errColor
+				}
 				return renderTable.fgColors[offset]
 			},
 			"fg256": func(offset int) string {
+				if offset < 0 || offset >= len(renderTable.fgColorsTerm) {
+					themeLogErr("fg256 offset out of range: %d", offset)
+					return errColor
+				}
 				return renderTable.fgColorsTerm[offset]
 			},
 			"alpha": func(pct int, c string) string {
@@ -236,11 +263,11 @@ func buildThemes(specPath string, outputPath string) error {
 			return fmt.Errorf("unable to create output file %q: %v", outPath, err)
 		}
 		defer outFile.Close()
-		tmpl, err := template.New("").Funcs(colorFuncs).ParseFiles("clarion-color-theme.json.tmpl")
+		tmpl, err := template.New("").Funcs(colorFuncs).ParseFiles("clarion-color-theme.json")
 		if err != nil {
 			return fmt.Errorf("template parse error: %v", err)
 		}
-		if err := tmpl.ExecuteTemplate(outFile, "clarion-color-theme.json.tmpl", nil); err != nil {
+		if err := tmpl.ExecuteTemplate(outFile, "clarion-color-theme.json", nil); err != nil {
 			return fmt.Errorf("template execution error: %v", err)
 		}
 	}
