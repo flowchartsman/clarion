@@ -28,11 +28,11 @@ Rather than simply picking values from a color palette and arbitrarily assigning
 If you see `problem`![problem swatch](https://via.placeholder.com/15/b50000.png?text=+), there is a serious problem of some kind within that context. Similarly, if you see `new`![new swatch](https://via.placeholder.com/15/4b6319.png?text=+), something has been added or is otherwise "new". Correspondingly, if something doesn't have a spceial meaning, it will not have a color. 
 
 ## Status
-Clarion is an untested proof-of-concept, and very much a work in progress. The specification is very bare-bones and its format and content will likely change as more values are codified into it. These include such things that currently only exist in templates or the spec generation code, such as CIELAB offset formulas and editor-specific styling identifiers.
+Clarion is an untested proof-of-concept, and very much a work in progress. The specification is very bare-bones and its format and content will likely change as more values are codified into it. These include such things that currently only exist in templates or the spec generation code, such as editor-specific styling identifiers.
 
 The current stable target is a published VSCoce colorscheme in the Visual Studio marketplace. This alone is a large undertaking, since there are hundreds of different color directives in VSCode, many of which are derivied or are simple alpha deltas, so care must be taken to exhaustively specify as many of these as possible to avoid "surprise" colors that are inconsistent with the goal of a very limited palette.
 
-For this reason, creating themes for other editors is beyond the current scope and will rely on more tooling for spec extraction and templating. Community contributions are very much desired.
+For this reason, creating themes for other editors is beyond the current scope and will rely on more tooling for spec extraction and templating. Community contributions are very much desired, and Go template functions already exist to render hex values as well as 256-color terminal approximations.
 
 It is still an open question as to whether the "conceptual palette" is a meaningful abstraction and how well it conforms to what science tells us about color and reading comprehension.
 
