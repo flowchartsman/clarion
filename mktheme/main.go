@@ -221,11 +221,12 @@ func buildThemes(specPath string, outputPath string) error {
 			},
 		}
 		for conceptColorName := range spec.conceptColors {
-			colorFuncs[conceptColorName] = func() string {
-				return renderTable.conceptColors[conceptColorName]
+			colorname := conceptColorName
+			colorFuncs[colorname] = func() string {
+				return renderTable.conceptColors[colorname]
 			}
-			colorFuncs[conceptColorName+"256"] = func() string {
-				return renderTable.conceptColorsTerm[conceptColorName]
+			colorFuncs[colorname+"256"] = func() string {
+				return renderTable.conceptColorsTerm[colorname]
 			}
 		}
 		themeFilename := fmt.Sprintf("clarion-color-theme%s.json", themeSuffix)
