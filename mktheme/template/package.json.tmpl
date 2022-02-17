@@ -1,0 +1,24 @@
+{
+    "name": "clarion",
+    "displayName": "clarion",
+    "description": "A minimalist theme focusing on clarity and semantic content.",
+    "version": "{{.Version}}",
+    "engines": {
+        "vscode": "^1.55.0"
+    },
+    "categories": [
+        "Themes"
+    ],
+    "contributes": {
+        "themes": [
+            {{- range $index, $element := .ThemeContribs}}
+            {{- if $index}},{{end}}
+            {
+                "label": "{{.Label}}",
+                "uiTheme": "vs",
+                "path": "./themes/{{.File}}"
+            }
+            {{- end}}
+        ]
+    }
+}

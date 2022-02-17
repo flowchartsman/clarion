@@ -11,6 +11,8 @@ import (
 	"github.com/lucasb-eyer/go-colorful"
 )
 
+const themeVersion = `0.0.1`
+
 // CIELAB ΔE* is the latest iteration of the CIE's color distance function, and
 // is intended to meaure the perceived distance between two colors, where a
 // value of 1.0 represents a "just noticeable difference".
@@ -36,10 +38,24 @@ func newRenderTable() renderTable {
 	}
 }
 
+type ThemePkg struct {
+	Version       string
+	ThemeContribs []ThemeContrib
+}
+
+type ThemeContrib struct {
+	Label string
+	File  string
+}
+
 func buildThemes(specPath string, outputPath string) error {
 	spec, err := loadSpec(specPath)
 	if err != nil {
 		return fmt.Errorf("error loading specification: %s", err)
+	}
+
+	pkg := &ThemePkg{
+		Version: themeVersion,
 	}
 
 	renderTable := newRenderTable()
@@ -73,10 +89,11 @@ func buildThemes(specPath string, outputPath string) error {
 		if i == 0 {
 			themeFileSuffix = ""
 		}
+		ThemeName := "Clarion " + baseColor
 		// Create Template functions
 		colorFuncs := template.FuncMap{
 			"themeName": func() string {
-				return "Clarion " + baseColor
+				return ThemeName
 			},
 			"bg": func(offset int) string {
 				center := len(renderTable.bgColors[baseColor]) / 2
@@ -125,7 +142,11 @@ func buildThemes(specPath string, outputPath string) error {
 			}
 		}
 		themeFilename := fmt.Sprintf("clarion-color-theme%s.json", themeFileSuffix)
-		outPath := filepath.Join(outputPath, themeFilename)
+		pkg.ThemeContribs = append(pkg.ThemeContribs, ThemeContrib{
+			Label: ThemeName,
+			File:  themeFilename,
+		})
+		outPath := filepath.Join(outputPath, "themes", themeFilename)
 		outFile, err := os.Create(outPath)
 		if err != nil {
 			return fmt.Errorf("unable to create output file %q: %v", outPath, err)
@@ -138,6 +159,19 @@ func buildThemes(specPath string, outputPath string) error {
 		if err := tmpl.ExecuteTemplate(outFile, "clarion-color-theme.json", nil); err != nil {
 			return fmt.Errorf("template execution error: %v", err)
 		}
+	}
+	pkgPath := filepath.Join(outputPath, "package.json")
+	outPkg, err := os.Create(pkgPath)
+	if err != nil {
+		return fmt.Errorf("unable to create package output file %q: %v", pkgPath, err)
+	}
+	defer outPkg.Close()
+	tmpl, err := template.New("").ParseFiles("template/package.json.tmpl")
+	if err != nil {
+		return fmt.Errorf("package template parse error: %v", err)
+	}
+	if err := tmpl.ExecuteTemplate(outPkg, "package.json.tmpl", pkg); err != nil {
+		return fmt.Errorf("package template execution error: %v", err)
 	}
 	return nil
 }
