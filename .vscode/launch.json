@@ -12,8 +12,8 @@
             "args": [
                 "--extensionDevelopmentPath=${workspaceFolder}"
             ],
-            "preLaunchTask": "Watch_Theme",
-            "postDebugTask": "Watch_Theme_Stop"
+            "preLaunchTask": "Watch Theme",
+            "postDebugTask": "Terminate Tasks"
         }
     ]
 }

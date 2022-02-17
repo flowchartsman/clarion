@@ -2,7 +2,7 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "Build_Mktheme",
+            "label": "Build mktheme",
             "type": "shell",
             "group": {
                 "kind": "build",
@@ -20,9 +20,9 @@
             ]
         },
         {
-            "label": "Watch_Theme",
+            "label": "Watch Theme",
             "dependsOn": [
-                "Build_Mktheme",
+                "Build mktheme",
             ],
             "dependsOrder": "sequence",
             "type": "shell",
@@ -50,9 +50,18 @@
             }
         },
         {
-            "label": "Watch_Theme_Stop",
+            "label": "Terminate Tasks",
+            "command": "echo ${input:terminate}",
             "type": "shell",
-            "command": "killall mktheme"
+            "problemMatcher": []
         },
+    ],
+    "inputs": [
+        {
+          "id": "terminate",
+          "type": "command",
+          "command": "workbench.action.tasks.terminate",
+          "args": "terminateAll"
+        }
     ]
 }
