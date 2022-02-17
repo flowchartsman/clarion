@@ -6,6 +6,10 @@ It is based on an interpretation of the best research available to the author at
 ## Background Colors
 Taken from the paper **Good Background Colors for Readers: A Study of People with and without Dyslexia**. Peach was listed highest in both test groups, and is thus the default, though both of the others came quite close. Should further research necessitate changes, ordering and colors may change, too.[[1]] The yellow selection subjectively appears harsher than the other two, so It's under evaluation for removal.
 
+### White
+* Swatch: ![#ffffff](https://via.placeholder.com/15/ffffff/000000?text=+)
+* Hex: #ffffff
+
 ### Peach
 * Swatch: ![#edd1b0](https://via.placeholder.com/15/edd1b0/000000?text=+)
 * Hex: #edd1b0
@@ -27,7 +31,7 @@ Black was chosen as the foreground color for its ubiqity and contrast and derive
 * Hex: #000000
 
 ## Color Permutations
-* ΔETarget: 2
+* ΔETarget: 3
 * LStep: 0.01
 * Variations: 10
 * ΔETargetFG: 10
@@ -38,6 +42,12 @@ To generate lighter or darker variants, colors are translated along the L (light
 A ΔE* of 1.0 is described as a "just noticable difference" (JND), so Clarion opts for a higher target **ΔETarget** in an attempt to provide greater distinctions. Currently this is done by increasing or decreasing the L value by **LStep** until ΔE* to the prior color meets or exceeds **ΔETarget**.
 
 Background colors get **Variations**/2 lighter variants and **Variations**/2 darker ones. Foreground colors get **Variations** lighter variants.
+
+## WCAG Standards
+
+### AA
+- Text: 4.5:1
+- UI: 3:1
 
 ## Conceptual Colors
 Palette derived from colorsafe.co with peach as the base color.
