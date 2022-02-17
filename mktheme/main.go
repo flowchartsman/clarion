@@ -201,9 +201,9 @@ func buildThemes(specPath string, outputPath string) error {
 	}
 
 	for i, baseColor := range spec.themeBases {
-		themeSuffix := "-" + strings.ToLower(baseColor)
+		themeFileSuffix := "-" + strings.ToLower(baseColor)
 		if i == 0 {
-			themeSuffix = ""
+			themeFileSuffix = ""
 		}
 		// Create Template functions
 		colorFuncs := template.FuncMap{
@@ -256,7 +256,7 @@ func buildThemes(specPath string, outputPath string) error {
 				return renderTable.conceptColorsTerm[colorname]
 			}
 		}
-		themeFilename := fmt.Sprintf("clarion-color-theme%s.json", themeSuffix)
+		themeFilename := fmt.Sprintf("clarion-color-theme%s.json", themeFileSuffix)
 		outPath := filepath.Join(outputPath, themeFilename)
 		outFile, err := os.Create(outPath)
 		if err != nil {
