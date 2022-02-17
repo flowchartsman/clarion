@@ -186,6 +186,7 @@
         "titleBar.inactiveBackground": "{{bg 0}}",
         "titleBar.inactiveForeground": "{{fg 1}}",
         "widget.shadow": "{{fg 0}}",
+        "editor.fontStyle": "bold",
     },
     "tokenColors": [
         {
@@ -203,14 +204,6 @@
         },
         {
             "scope": [
-                "string"
-            ],
-            "settings": {
-                "fontStyle": "bold",
-            }
-        },
-        {
-            "scope": [
                 "punctuation.definition.string",
                 "storage.type.string.python"
             ],
@@ -218,57 +211,24 @@
                 "foreground": "{{fg 0}}"
             }
         },
-        // {
-        //     "scope": [
-        //         "beginning.punctuation",
-        //         "entity.name.section.group-title",
-        //         "entity.name.tag",
-        //         "entity.other.attribute-name.class",
-        //         "entity.other.attribute-name.id",
-        //         "keyword.const",
-        //         "keyword.control",
-        //         "keyword.function",
-        //         "keyword.import",
-        //         "keyword.operator.assignment",
-        //         "keyword.operator.comparison",
-        //         "keyword.operator.decrement",
-        //         "keyword.operator.expression",
-        //         "keyword.operator.increment",
-        //         "keyword.operator.increment-decrement",
-        //         "keyword.operator.logical",
-        //         "keyword.operator.misc",
-        //         "keyword.operator.new",
-        //         "keyword.operator.other",
-        //         "keyword.operator.ternary",
-        //         "keyword.other.fn",
-        //         "keyword.other.rust",
-        //         "keyword.other.special-method",
-        //         "keyword.other.where",
-        //         "keyword.package",
-        //         "keyword.type",
-        //         "keyword.var",
-        //         "markup.heading",
-        //         "meta.tag.sgml.doctype.html",
-        //         "punctuation.separator.key-value",
-        //         "storage.modifier",
-        //         "storage.type.class",
-        //         "storage.type.enum",
-        //         "storage.type.function",
-        //         "storage.type.import",
-        //         "storage.type.interface",
-        //         "storage.type.js",
-        //         "storage.type.namespace",
-        //         "storage.type.property",
-        //         "storage.type.rust",
-        //         "storage.type.string.python",
-        //         "storage.type.ts",
-        //         "storage.type.tsx",
-        //         "storage.type.type",
-        //         "support.type.object.module"
-        //     ],
-        //     "settings": {
-        //         "fontStyle": "bold"
-        //     }
-        // }
+        {
+            "scope": [
+                "string",
+                "entity.name.section.group-title",
+                "keyword.const",
+                "keyword.function",
+                "keyword.import",
+                "keyword.var",
+                "markup.heading",
+                "storage.type.function",
+                "storage.type.import",
+                "storage.type.namespace",
+                "storage.type.string.python",
+                "support.type.object.module"
+            ],
+            "settings": {
+                "fontStyle": "bold"
+            }
+        }
     ]
 }
