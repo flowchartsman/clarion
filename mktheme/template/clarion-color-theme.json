@@ -1,12 +1,13 @@
 {
-    "name": "clarion{{if themeName}}-{{themeName}}{{end}}",
+    "name": "{{themeName}}",
 	"type": "light",
-	//"semanticHighlighting": true,
+	"semanticHighlighting": false,
     "colors": {
         "window.activeBorder": "{{fg 0}}",
         "window.inactiveBorder": "{{excluded}}",
+        "titleBar.border": "{{fg 1}}",
         "activityBar.background": "{{bg -2}}",
-        //"activityBar.border": "{{fg 0}}",
+        "activityBar.border": "{{fg 0}}",
         "activityBar.foreground": "{{fg 0}}",
         "activityBarBadge.background": "{{fg 0}}",
         "activityBarBadge.foreground": "{{bg 0}}",
@@ -139,8 +140,8 @@
         "peekViewTitleLabel.foreground": "{{fg 0}}",
         "progressBar.background": "#004bff",
         "scrollbar.shadow": "{{fg 0}}",
-        "scrollbarSlider.background": "#99a7e119",
-        "scrollbarSlider.hoverBackground": "{{fg 0}}",
+        "scrollbarSlider.background": "{{fg 0}}20",
+        "scrollbarSlider.hoverBackground": "{{fg 0}}30",
         "sideBar.background": "{{bg -1}}",
         "sideBar.foreground": "{{fg 0}}",
         "sideBarSectionHeader.background": "{{bg -3}}",
@@ -184,10 +185,7 @@
         "titleBar.activeForeground": "{{fg 0}}",
         "titleBar.inactiveBackground": "{{bg 0}}",
         "titleBar.inactiveForeground": "{{fg 1}}",
-        "welcomePage.buttonBackground": "#f4f6fc",
-        "welcomePage.buttonHoverBackground": "#0064ff26",
         "widget.shadow": "{{fg 0}}",
-        "editor.fontStyle": "bold",
     },
     "tokenColors": [
         {
@@ -195,8 +193,8 @@
                 "comment.block",
                 "comment.block.documentation",
                 "comment.line",
-                "comment"
-                //"string.quoted.docstring"
+                "comment",
+                "string.quoted.docstring"
             ],
             "settings": {
                 "foreground": "{{fg 2}}",
@@ -208,7 +206,6 @@
                 "string"
             ],
             "settings": {
-                //"foreground": "#6b7a88",
                 "fontStyle": "bold",
             }
         },

@@ -263,7 +263,7 @@ func buildThemes(specPath string, outputPath string) error {
 			return fmt.Errorf("unable to create output file %q: %v", outPath, err)
 		}
 		defer outFile.Close()
-		tmpl, err := template.New("").Funcs(colorFuncs).ParseFiles("clarion-color-theme.json")
+		tmpl, err := template.New("").Funcs(colorFuncs).ParseFiles("template/clarion-color-theme.json")
 		if err != nil {
 			return fmt.Errorf("template parse error: %v", err)
 		}
