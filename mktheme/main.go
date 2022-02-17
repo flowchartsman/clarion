@@ -108,9 +108,9 @@ func generateVariations(baseColorStr string, variations int, ΔETarget float64, 
 				}
 				switch {
 				case l >= 100:
-					return nil, nil, fmt.Errorf("L overflow for variant %d", i)
+					return nil, nil, fmt.Errorf("overflow L for variant %d", i)
 				case l <= 0:
-					return nil, nil, fmt.Errorf("L underflow for variant %d", i)
+					return nil, nil, fmt.Errorf("underflow L for variant %d", i)
 				}
 				variation = colorful.Lab(l, a, b)
 				distance = lastVariation.DistanceCIEDE2000(variation)
