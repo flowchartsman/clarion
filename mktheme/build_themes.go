@@ -34,6 +34,7 @@ type colorTable struct {
 	fg            colorful.Color
 	lightFg       colorful.Color
 	conceptColors map[string]colorLevels
+	ansiColors    map[string]colorful.Color
 }
 
 func buildThemes(specPath string, outputPath string) error {
@@ -48,39 +49,26 @@ func buildThemes(specPath string, outputPath string) error {
 
 	masterTable := map[string]colorTable{}
 
-	for baseColorName, baseColorHex := range spec.baseColors {
-		masterTable[baseColorName] = colorTable{
-			conceptColors: make(map[string]colorLevels),
-		}
-		baseColor, err := colorful.Hex(baseColorHex)
-		if err != nil {
-			return fmt.Errorf("base color hex invaid: %s", err)
-		}
-		fgColor, err := colorful.Hex(spec.fgColor)
-		if err != nil {
-			return fmt.Errorf("foreground color hex invalid: %s", err)
-		}
-		backgroundVariations, err := generateBackgroundVariations(baseColor, spec.variations, spec.ΔETarget, spec.Lstep, darker)
+	for baseColorName, baseColor := range spec.baseColors {
+		// generate background color variations
+		backgroundVariations, err := generateBrightnessVariations(baseColor, spec.variations, spec.ΔETarget, spec.Lstep, darker)
 		if err != nil {
 			return err
 		}
 
 		// sanity check the foreground against the darkest background color
-		lowestFGContrast := contrast(fgColor, backgroundVariations[len(backgroundVariations)-1])
+		lowestFGContrast := contrast(spec.fgColor, backgroundVariations[len(backgroundVariations)-1])
 		if lowestFGContrast < 4.5 {
-			return fmt.Errorf("contrast ratio of foreground color (%s) to darkest background variant (%s) is too low %f<4.5", fgColor.Hex(), backgroundVariations[len(backgroundVariations)-1].Hex(), lowestFGContrast)
+			return fmt.Errorf("contrast ratio of foreground color (%s) to darkest background variant (%s) is too low %f < 4.5", spec.fgColor.Hex(), backgroundVariations[len(backgroundVariations)-1].Hex(), lowestFGContrast)
 		}
 
 		// get the darkest background variation for calculating minimum contrast
 		// for concept colors and ui elements
 		darkestBackground := backgroundVariations[len(backgroundVariations)-1]
 
+		// generate the theme-specific concept colors
 		cColors := make(map[string]colorLevels)
-		for conceptColorName, conceptColorStr := range spec.conceptColors {
-			conceptColor, err := colorful.Hex(conceptColorStr)
-			if err != nil {
-				return fmt.Errorf("concept color %q hex is invalid: %s", conceptColorName, err)
-			}
+		for conceptColorName, conceptColor := range spec.conceptColors {
 			// generate concept colors based on the darkest background variation
 			ccUI, ccMin, ccEnhanced := getLevels(darkestBackground, conceptColor)
 			cColors[conceptColorName] = colorLevels{
@@ -89,18 +77,61 @@ func buildThemes(specPath string, outputPath string) error {
 				ui:       ccUI,
 			}
 		}
+
+		// generate the theme-specific ansi colors
+		// masterTable[baseColorName] = colorTable{
+		// 	conceptColors: make(map[string]colorLevels),
+		// }
+
+		black := colorful.Color{R: 0, G: 0, B: 0}
+		ansiColors := map[string]colorful.Color{
+			"ansiBlack": black,
+		}
+		blackVariations, err := generateBrightnessVariations(black, 2, 0.02, spec.Lstep, lighter)
+		if err != nil {
+			return err
+		}
+		brightBlack := blackVariations[1]
+		if !brightBlack.IsValid() {
+			brightBlack = brightBlack.Clamped()
+		}
+		ansiColors["ansiBrightBlack"] = brightBlack
+
+		// sanity check brightBlack against the darkest background color
+		brightBlackContrast := contrast(brightBlack, backgroundVariations[len(backgroundVariations)-1])
+		if brightBlackContrast < float64(4.5) {
+			return fmt.Errorf("contrast ratio of ansiBrightBlack color (%s) to darkest background variant (%s) is too low %f < 4.5", brightBlack.Hex(), backgroundVariations[len(backgroundVariations)-1].Hex(), brightBlackContrast)
+		}
+
+		for ansiColorName, ansiColor := range spec.ansiColors {
+			themeAnsi, _, _ := getLevels(darkestBackground, ansiColor)
+			ansiColors["ansiBright"+ansiColorName] = themeAnsi
+			ansiVariations, err := generateBrightnessVariations(themeAnsi, 2, spec.ΔETarget, spec.Lstep, darker)
+			if err != nil {
+				return err
+			}
+			ansiDark := ansiVariations[1]
+			if !ansiDark.IsValid() {
+				ansiDark = ansiDark.Clamped()
+			}
+			ansiColors["ansi"+ansiColorName] = ansiDark
+		}
+
 		//generate a color for ui elements based on ui contrast level for
 		//darkest background variation
 		uiElementColor, _, _ := getLevels(darkestBackground, darkestBackground)
+
 		// generate the lightest possible fg color we can use in the main editor
 		// area
 		_, lightFg, _ := getLevels(baseColor, baseColor)
+
 		masterTable[baseColorName] = colorTable{
 			ui:            uiElementColor,
 			bg:            backgroundVariations,
-			fg:            fgColor,
+			fg:            spec.fgColor,
 			lightFg:       lightFg,
 			conceptColors: cColors,
+			ansiColors:    ansiColors,
 		}
 	}
 
@@ -127,6 +158,9 @@ func buildThemes(specPath string, outputPath string) error {
 		}
 		for conceptColorName := range themeTable.conceptColors {
 			colorFuncs[conceptColorName] = tmplColor(conceptColorName, themeTable)
+		}
+		for ansiColorName := range themeTable.ansiColors {
+			colorFuncs[ansiColorName] = tmplAnsiColor(ansiColorName, themeTable)
 		}
 		themeFilename := fmt.Sprintf("clarion-color-theme%s.json", themeFileSuffix)
 		pkg.ThemeContribs = append(pkg.ThemeContribs, ThemeContrib{

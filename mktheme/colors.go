@@ -65,13 +65,13 @@ func getLevels(bg, fg colorful.Color) (ui, minimum, enhanced colorful.Color) {
 // value of 1.0 represents a "just noticeable difference".
 // ref:  https://en.wikipedia.org/wiki/Color_difference#CIEDE2000
 
-func generateBackgroundVariations(backGround colorful.Color, numVariations int, ΔETarget float64, LStep float64, direction adjustmentDirection) (variations []colorful.Color, err error) {
+func generateBrightnessVariations(baseColor colorful.Color, numVariations int, ΔETarget float64, LStep float64, direction adjustmentDirection) (variations []colorful.Color, err error) {
 	variations = make([]colorful.Color, numVariations)
-	lastVariation := backGround
+	lastVariation := baseColor
 	for i := 0; i < numVariations; i++ {
 		variation := lastVariation
 		if i == 0 {
-			variation = backGround
+			variation = baseColor
 		} else {
 			var distance float64
 			for distance < ΔETarget {

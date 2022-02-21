@@ -41,6 +41,12 @@ func tmplColor(colorName string, table colorTable) func(string) colorful.Color {
 	}
 }
 
+func tmplAnsiColor(colorName string, table colorTable) func() colorful.Color {
+	return func() colorful.Color {
+		return table.ansiColors[colorName]
+	}
+}
+
 func tmplFG(table colorTable) func() colorful.Color {
 	return func() colorful.Color {
 		return table.fg
