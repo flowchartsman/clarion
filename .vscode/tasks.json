@@ -50,6 +50,30 @@
             }
         },
         {
+            "label": "Rebuild Theme",
+            "dependsOn": [
+                "Build mktheme",
+            ],
+            "dependsOrder": "sequence",
+            "type": "shell",
+            "options": {
+                "cwd": "${workspaceFolder}/mktheme"
+            },
+            "isBackground": false,
+            "command": "./mktheme",
+            "args": [
+                "../SPEC.md",
+                ".." 
+            ],
+            "problemMatcher": {
+                "owner": "mktheme",
+                "fileLocation": ["relative", "${workspaceFolder}"],
+                "pattern":{
+                    "regexp": "^mktheme error:",
+                } 
+            }
+        },
+        {
             "label": "Terminate Tasks",
             "command": "echo ${input:terminate}",
             "type": "shell",
