@@ -48,7 +48,7 @@ Compliance requirements define "minumum" (AA) and "enhanced" (AAA) text:backgrou
 * Text (Maxumum - AAA): 7:1 
 * Non-text: 3:1
 
-Because colored text at both text contrast ratios can be difficult to distinguish, Clarion makes every effort to restrict color usage to badges and graphical elements, which can use the much more permissive non-text contrast ratio.
+Because text at both text contrast ratios can be difficult to distinguish from the FG color, Clarion makes every effort to restrict color usage to badges and graphical elements, which can use the much more permissive non-text contrast ratio.
 
 [//]: # "TODO: include when high-contrast themes are implemented: AAA is the most restrictive, defining a minimum text:background contrast ratio of 7:1, however this means that colors will be much closer to black, and potentially difficult to distinguish... TODO: implementation"
 
