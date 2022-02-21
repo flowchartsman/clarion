@@ -52,7 +52,7 @@
         "editorGutter.modifiedBackground": "#294073",
         "editorLineNumber.activeForeground": "#000000",
         "editorLineNumber.foreground": "#000000",
-        "editorLink.activeForeground": "##866c00",
+        "editorLink.activeForeground": "#866c00",
         "editorOverviewRuler.addedForeground": "#000000",
         "editorOverviewRuler.border": "#484135",
         "editorOverviewRuler.bracketMatchForeground": "#0064ff4c",

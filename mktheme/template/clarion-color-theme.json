@@ -52,7 +52,7 @@
         "editorGutter.modifiedBackground": "{{modified "ui"|hex}}",
         "editorLineNumber.activeForeground": "{{fg|hex}}",
         "editorLineNumber.foreground": "{{fg|hex}}",
-        "editorLink.activeForeground": "#{{lightfg|hex}}",
+        "editorLink.activeForeground": "{{lightfg|hex}}",
         "editorOverviewRuler.addedForeground": "{{fg|hex}}",
         "editorOverviewRuler.border": "{{uifg|hex}}",
         "editorOverviewRuler.bracketMatchForeground": "#0064ff4c",
