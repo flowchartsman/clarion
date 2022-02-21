@@ -131,7 +131,7 @@
         "peekViewEditor.background": "{{bg 1|hex}}",
         "peekViewEditor.matchHighlightBackground": "#ffca0099",
         "peekViewResult.background": "{{bg 2|hex}}",
-        "peekViewResult.fileForeground": "{{bg 1|hex}}",
+        "peekViewResult.fileForeground": "{{fg|hex}}",
         "peekViewResult.lineForeground": "{{lightfg|hex}}",
         "peekViewResult.matchHighlightBackground": "#ffca0099",
         "peekViewResult.selectionBackground": "{{bg 1|hex}}",
