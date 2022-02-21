@@ -79,10 +79,6 @@ func buildThemes(specPath string, outputPath string) error {
 		}
 
 		// generate the theme-specific ansi colors
-		// masterTable[baseColorName] = colorTable{
-		// 	conceptColors: make(map[string]colorLevels),
-		// }
-
 		black := colorful.Color{R: 0, G: 0, B: 0}
 		ansiColors := map[string]colorful.Color{
 			"ansiBlack": black,
