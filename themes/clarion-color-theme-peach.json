@@ -249,6 +249,7 @@
                 "storage.type.namespace",
                 "storage.type.string.python",
                 "support.type.object.module",
+                "markup.bold",
                 "markup.inline.raw",
                 "markup.raw.monospace",
                 "markup.fenced_code.block",
