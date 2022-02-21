@@ -229,6 +229,14 @@
         },
         {
             "scope": [
+                "markup.italic",
+            ],
+            "settings": {
+                "fontStyle": "italic"
+            }
+        },
+        {
+            "scope": [
                 "string",
                 "entity.name.section.group-title",
                 "keyword.const",
@@ -242,7 +250,8 @@
                 "storage.type.string.python",
                 "support.type.object.module",
                 "markup.inline.raw",
-                "markup.raw.monospace.asciidoc",
+                "markup.raw.monospace",
+                "markup.fenced_code.block",
             ],
             "settings": {
                 //"foreground":"{{lightfg|hex}}",
