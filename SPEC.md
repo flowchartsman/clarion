@@ -4,26 +4,84 @@ This is the specification for Clarion. This file is parsed to generate the color
 It is based on an interpretation of the best research available to the author at the time of this writing.
 
 ## Background Colors
-Primary color scheme is white on black. (citation todo)).
+Research overwhelmingly suggests that contrast, not color is the primary factor in readbility and retention.[[1]] Black text on a white background provides the greatest contrast, so this is Clarion's primary theme choice.
 
-Secondary color Peach aken from the paper **Good Background Colors for Readers: A Study of People with and without Dyslexia**. Peach was listed highest in both test groups.[[1]]
+So long as contrast is maintained, studies indicate that background hue has minimal to no impact on reading performance[[2]], so a variety of background hues are provided across the color wheel to suit user prefecence.
 
 ### White
 * Swatch: ![#ffffff](https://via.placeholder.com/15/ffffff/000000?text=+)
 * Hex: #ffffff
 
+Clarion's primary background color. Provides the highest contrast.
+
+### Orange
+* Swatch: ![#FFF1D6](https://via.placeholder.com/15/#FFF1D6/000000?text=+)
+* Hex: #FFF1D6
+
+A relaxing, desaturated orange
+
 ### Peach
 * Swatch: ![#edd1b0](https://via.placeholder.com/15/edd1b0/000000?text=+)
 * Hex: #edd1b0
 
+Secondary color "Peach" taken from the paper **Good Background Colors for Readers: A Study of People with and without Dyslexia**. Peach was listed highest in both test groups.[[3]]
+
 ## Foreground Colors
 
-Black was chosen as the foreground color for its ubiqity and contrast and derived from the experimental methods in [[1]].
+Black was chosen as the primary foreground color for its ubiqity and contrast.
 
 ### Black
 * Swatch: ![#000000](https://via.placeholder.com/15/000000/000000?text=+)
 * Hex: #000000
 
+## Color Contrast
+
+At the time of this writing (Feb, 2022), the W3C Web Content Accessibility Guidelines (WCAG version 2.1) are the canonical source Clarion uses for determining an acceptable level of text:background contrast.[[4]] Of relevance to color schemes are the following success critereon:
+
+* 1.4.3 - Contrast (Minimum) for text and images of text (Level AA)
+* 1.4.6 - Contrast (Enhanced) for text and images of text (Level AAA)
+* 1.4.11 - Non-text Contrast
+
+Compliance requirements define "minumum" (AA) and "enhanced" (AAA) text:background contrast ratios:
+
+* Text (Minumum - AA): 4.5:1
+* Text (Maxumum - AAA): 7:1 
+* Non-text: 3:1
+
+Because colored text at both text contrast ratios can be difficult to distinguish, Clarion makes every effort to restrict color usage to badges and graphical elements, which can use the much more permissive non-text contrast ratio.
+
+[//]: # "TODO: include when high-contrast themes are implemented: AAA is the most restrictive, defining a minimum text:background contrast ratio of 7:1, however this means that colors will be much closer to black, and potentially difficult to distinguish... TODO: implementation"
+
+### Ratio Calculation
+
+These ratios are determined using the formula: 
+
+`(L1 + 0.05) / (L2 + 0.05)`
+
+Where L1 and L2 are the base luminance values of the lighter and darker colors, respectively.[[40]].
+
+### Base Luminance Calculation
+
+Base luminance, in turn, is calculated in the sRGB colorspace using the following formula:
+
+`L = 0.2126 * R + 0.7152 * G + 0.0722 * B`
+
+Where component values are calculated first by determining the sRGB value using the underlying 8-bit representation such that:
+
+`<Component sRGB value> = <Component 8-bit value>/255`
+
+Then assigned a value based off of the following table:
+
+| If `sRGB <= 0.03928`              | Otherwise                                                |
+|-------------------------------------------|----------------------------------------------------------|
+| `component = sRGB/12.92` | `component  = ((sRGB+0.055)/1.055) ^ 2.4` |
+
+
+
+
+
+
+define contrast ratio requirements for text and graphical elements to ensure reability by people of "moderately low vision". It defines two levels of 
 ## Color Permutations
 * ΔETarget: 3
 * LStep: 0.01
@@ -31,7 +89,7 @@ Black was chosen as the foreground color for its ubiqity and contrast and derive
 * ΔETargetFG: 10
 * VariationsFG: 4
 
-To generate lighter or darker variants, colors are translated along the L (lightniess) axis of the CIELAB color space until they are "noticeably different", as measured by the CIE Distance metric ΔE* derived using CIEDE2000.[[2]][[3]]
+To generate lighter or darker variants, colors are translated along the L (lightniess) axis of the CIELAB color space until they are "noticeably different", as measured by the CIE Distance metric ΔE* derived using CIEDE2000.[[5]][[6]]
 
 A ΔE* of 1.0 is described as a "just noticable difference" (JND), so Clarion opts for a higher target **ΔETarget** in an attempt to provide greater distinctions. Currently this is done by increasing or decreasing the L value by **LStep** until ΔE* to the prior color meets or exceeds **ΔETarget**.
 
@@ -44,7 +102,8 @@ Background colors get **Variations**/2 lighter variants and **Variations**/2 dar
 - UI: 3:1
 
 ## Conceptual Colors
-Palette derived from colorsafe.co with peach as the base color.
+TODO: Derivation
+
 * Restrictions: WCAG Standard - AA
 * Font Size: 18px
 * Font Weight: 400
@@ -116,15 +175,12 @@ TBD
 Because background colors are adjusted using steps in the CIELAB L(lightness) dimension, the results do not always map to the RGB color space, and must be "clamped", which is lossy. It's probably better to make adjustments in another color space.
 
 ### Semantic Color Consistency
-It is a well-known phenomenon that different colors appear differently against varying color backgrounds. This is known as "simultaneous color contrast". [[4]][[5]] Because conceptual colors are an important principle of Clarion's design, it would be ideal to programmatically correct for this in background variations. If a good technique for this is available, it should be implemented.
+It is a well-known phenomenon that different colors appear differently against varying color backgrounds. This is known as "simultaneous color contrast". [[7]][[8]] Because conceptual colors are an important principle of Clarion's design, it would be ideal to programmatically correct for this in background variations. If a good technique for this is available, it should be implemented.
 
 ### Semantic Palette Derivation
-While the distribution of the Conceptual Palette colors in the CIELAB space is derived from research, the Colorgorical implementation used is not deterministic, and the current color palette was derived through trial-and error and choices are fiat from the author's (Andy Walker) own ideas about what concepts are important. Therefore, personal bias towards "notable concepts" and "good concept:color concordance" played a significant role in the selection of the current conceptual palette, making this by far the weakest part of the spec with respect to actual science. It would be better to generate them automatically somehow, such as is done in the medialab.io "iwanthue" implementation.[[6]]
+While the distribution of the Conceptual Palette colors in the CIELAB space is derived from research, the Colorgorical implementation used is not deterministic, and the current color palette was derived through trial-and error and choices are fiat from the author's (Andy Walker) own ideas about what concepts are important. Therefore, personal bias towards "notable concepts" and "good concept:color concordance" played a significant role in the selection of the current conceptual palette, making this by far the weakest part of the spec with respect to actual science. It would be better to generate them automatically somehow, such as is done in the medialab.io "iwanthue" implementation.[[9]]
 
-Colors were formerly based off of **Colorgorical: Creating discriminable and preferable color palettes for information visualization** paper, using the online implementation with all sliders maxed out.[[7]][[8]], and this work should be revisited if the conceptual paletted needs additions or to be systemitized further.
-
-### Semantic Palette Contrast/Readability
-Additionally, more testing should be done to ensure that the conceptual palette colors are readable against Clarion base colors. This should be as deterministic as possible.
+Colors were formerly based off of **Colorgorical: Creating discriminable and preferable color palettes for information visualization** paper, using the online implementation with all sliders maxed out.[[10]][[11]], and this work should be revisited if the conceptual paletted needs additions or to be systemitized further.
 
 ## Caveats
 I (Andy Walker) am not an expert in ergonomics, reading comprehension, color theory or related disciplines. I'm just a programmer interpreting the work of actual experts.
@@ -132,29 +188,41 @@ I (Andy Walker) am not an expert in ergonomics, reading comprehension, color the
 I welcome all forms of feedback, informed correction and collaboration with actual experts in the relevant fields, and will readily incorporate suggested changes to this specification, and grant primary credit for any contributions. All I care about is having the most informed colorscheme possible to ease the life of my fellow programmers and anyone who needs to stare at text all day.
 
 ## Links and Citations
-[[1]] Rello, L. & Bigham, J. P. (2017). Good Background Colors for Readers: A Study of People with and without Dyslexia. Proceedings of the 19th International ACM SIGACCESS Conference on Computers and Accessibility, 72-89.
+[[1]] Hall, R. H. & Hanna, P. (2004). The Impact of Web Page Text-Background Colour Combinations on Readability, Retention, Aesthetics and Behavioural Intention. Behaviour & Information Technology, 23(1), 183-195.
+[(alternate source)](https://tecfa.unige.ch/tecfa/maltt/cosys-2/textes/hall04.pdf)
+
+[[2]] Knoblauch et al. (1991). Effect of Vhromatic and Luminance Contrast on Reading. Journal of the Optical Society of America. A, Optics and image science 8(2), 428-439.
+
+[[3]] Rello, L. & Bigham, J. P. (2017). Good Background Colors for Readers: A Study of People with and without Dyslexia. Proceedings of the 19th International ACM SIGACCESS Conference on Computers and Accessibility, 72-89.
 [(alternate source)](https://www.cs.cmu.edu/~jbigham/pubs/pdfs/2017/colors.pdf)
 
-[[2]] Wikiepedia Page on Color difference - Section on ΔE*
+[[4]] WCAG 2.1 Success Criteria - W3C Web Accessibility Initiative (WAI)
+
+[[40]] WCAG 2.1 Understanding Success Criterion 1.4.3: Contrast (Minimum) - W3C Web Accessibility Initiative (WAI)
+
+[[5]] Wikiepedia Page on Color difference - Section on ΔE*
  
-[[3]] Wikiepedia Page on Color difference - Section on the CIEDE2000 formula for calculating ΔE*
+[[6]] Wikiepedia Page on Color difference - Section on the CIEDE2000 formula for calculating ΔE*
 
-[[4]] Simultaneous and Successive Contrast - Color Usage Research Lab, Nasa Ames Research Center
+[[7]] Simultaneous and Successive Contrast - Color Usage Research Lab, Nasa Ames Research Center
 
-[[5]] Color Discrimination and Identification - Color Usage Research Lab, Nasa Ames Research Center
+[[8]] Color Discrimination and Identification - Color Usage Research Lab, Nasa Ames Research Center
 
-[[6]] iwanthue - Colors for data scientists. - https<area>://medialab.github.io/iwanthue/
+[[9]] iwanthue - Colors for data scientists. - https<area>://medialab.github.io/iwanthue/
 
-[[7]] Gramazio, C. C. et al. (2016). Colorgorical: Creating discriminable and preferable color palettes for information visualization. IEEE Transactions on Visualization and Computer Graphics, 23(1), 521-530. [(alternate source)](http://vrl.cs.brown.edu/color/pdf/colorgorical.pdf)
+[[10]] Gramazio, C. C. et al. (2016). Colorgorical: Creating discriminable and preferable color palettes for information visualization. IEEE Transactions on Visualization and Computer Graphics, 23(1), 521-530. [(alternate source)](http://vrl.cs.brown.edu/color/pdf/colorgorical.pdf)
 
-[[8]] http<area>://vrl.cs.brown.edu/color
+[[11]] http<area>://vrl.cs.brown.edu/color
 
-
-[1]: https://doi.org/10.1145/3132525.3132546
-[2]: https://en.wikipedia.org/wiki/Color_difference#CIELAB_%CE%94E*
-[3]: https://en.wikipedia.org/wiki/Color_difference#CIEDE2000
-[4]: https://colorusage.arc.nasa.gov/Simult_and_succ_cont.php
-[5]: https://colorusage.arc.nasa.gov/discrim.php
-[6]: https://medialab.github.io/iwanthue/
-[7]: https://doi.org/10.1109/TVCG.2016.2598918
-[8]: http://vrl.cs.brown.edu/color
+[1]: https://doi.org/10.1080/01449290410001669932
+[2]: http://dx.doi.org/10.1364/JOSAA.8.000428
+[3]: https://doi.org/10.1145/3132525.3132546
+[4]: https://www.w3.org/TR/WCAG21/
+[40]: https://www.w3.org/WAI/WCAG21/Understanding/contrast-minimum.html#dfn-contrast-ratio
+[5]: https://en.wikipedia.org/wiki/Color_difference#CIELAB_%CE%94E*
+[6]: https://en.wikipedia.org/wiki/Color_difference#CIEDE2000
+[7]: https://colorusage.arc.nasa.gov/Simult_and_succ_cont.php
+[8]: https://colorusage.arc.nasa.gov/discrim.php
+[9]: https://medialab.github.io/iwanthue/
+[10]: https://doi.org/10.1109/TVCG.2016.2598918
+[11]: http://vrl.cs.brown.edu/color

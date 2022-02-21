@@ -17,6 +17,11 @@
                 "path": "./themes/clarion-color-theme.json"
             },
             {
+                "label": "Clarion Orange",
+                "uiTheme": "vs",
+                "path": "./themes/clarion-color-theme-orange.json"
+            },
+            {
                 "label": "Clarion Peach",
                 "uiTheme": "vs",
                 "path": "./themes/clarion-color-theme-peach.json"
