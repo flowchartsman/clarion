@@ -12,41 +12,63 @@ const (
 	_ adjustmentDirection = iota
 	lighter
 	darker
-	both
 )
 
-func rev(s []string) {
-	for i := len(s)/2 - 1; i >= 0; i-- {
-		opp := len(s) - 1 - i
-		s[i], s[opp] = s[opp], s[i]
-	}
+// func rev(s []string) {
+// 	for i := len(s)/2 - 1; i >= 0; i-- {
+// 		opp := len(s) - 1 - i
+// 		s[i], s[opp] = s[opp], s[i]
+// 	}
+// }
+
+func sRGBLuminance(color colorful.Color) float64 {
+	r, g, b := color.LinearRgb()
+	return 0.2126*r + 0.7152*g + 0.0722*b
 }
 
-const (
-	errColor    = `#FF00FF`
-	errColor256 = `201`
-)
-
-func generateVariations(baseColorStr string, variations int, ΔETarget float64, LStep float64, direction adjustmentDirection) (hexVariations []string, termVariations []string, err error) {
-	if direction == both {
-		variations /= 2
-		hvl, tvl, err := generateVariations(baseColorStr, variations, ΔETarget, LStep, lighter)
-		if err != nil {
-			return nil, nil, err
-		}
-		hvd, tvd, err := generateVariations(baseColorStr, variations, ΔETarget, LStep, darker)
-		if err != nil {
-			return nil, nil, err
-		}
-		rev(hvd)
-		rev(tvd)
-		return append(hvd, hvl[1:]...), append(tvd, tvl[1:]...), nil
+func contrast(c1 colorful.Color, c2 colorful.Color) float64 {
+	l1 := sRGBLuminance(c1)
+	l2 := sRGBLuminance(c2)
+	if l2 > l1 {
+		l1, l2 = l2, l1
 	}
-	baseColor, _ := colorful.Hex(baseColorStr)
-	hexVariations = make([]string, variations)
-	termVariations = make([]string, variations)
+	return (l1 + 0.05) / (l2 + 0.05)
+}
+
+const lStep = 0.001
+
+func getLevels(bg, fg colorful.Color) (ui, minimum, enhanced colorful.Color) {
+	current := fg
+	targetContrasts := [3]float64{3.0, 4.5, 7}
+	outputs := [3]*colorful.Color{&ui, &minimum, &enhanced}
+	levelStr := [3]string{"ui", "minimum", "maximum"}
+	for i := 0; i < 3; i++ {
+		for contrast(bg, current) < targetContrasts[i] {
+			if current.R == 0 && current.G == 0 && current.B == 0 {
+				themeLog("fg color has bottomed out bg[%s] fg[%s] variant[%s]", bg.Hex(), fg.Hex(), levelStr[i])
+				for ii := i; ii < 3; ii++ {
+					*outputs[ii] = current
+				}
+				return
+			}
+			h, s, l := current.HSLuv()
+			l -= lStep
+			current = colorful.HSLuv(h, s, l)
+		}
+		*outputs[i] = current
+	}
+	return
+}
+
+// CIELAB ΔE* is the latest iteration of the CIE's color distance function, and
+// is intended to meaure the perceived distance between two colors, where a
+// value of 1.0 represents a "just noticeable difference".
+// ref:  https://en.wikipedia.org/wiki/Color_difference#CIEDE2000
+
+func generateBrightnessVariations(baseColor colorful.Color, numVariations int, ΔETarget float64, LStep float64, direction adjustmentDirection) (variations []colorful.Color, err error) {
+	variations = make([]colorful.Color, numVariations)
 	lastVariation := baseColor
-	for i := 0; i < variations; i++ {
+	for i := 0; i < numVariations; i++ {
 		variation := lastVariation
 		if i == 0 {
 			variation = baseColor
@@ -61,18 +83,19 @@ func generateVariations(baseColorStr string, variations int, ΔETarget float64, 
 				}
 				switch {
 				case l >= 100:
-					return nil, nil, fmt.Errorf("overflow L for variant %d", i)
+					return nil, fmt.Errorf("overflow L for variant %d", i)
 				case l <= 0:
-					return nil, nil, fmt.Errorf("underflow L for variant %d", i)
+					return nil, fmt.Errorf("underflow L for variant %d", i)
 				}
 				variation = colorful.Lab(l, a, b)
 				distance = lastVariation.DistanceCIEDE2000(variation)
 			}
 		}
-		variation = variation.Clamped()
-		hexVariations[i] = variation.Hex()
-		termVariations[i] = toTerminal(variation)
+		if !variation.IsValid() {
+			variation = variation.Clamped()
+		}
+		variations[i] = variation
 		lastVariation = variation
 	}
-	return hexVariations, termVariations, nil
+	return variations, nil
 }

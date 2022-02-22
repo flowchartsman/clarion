@@ -3,19 +3,19 @@ Clarion is a mostly-monochromatic, minimally-highlighted colorscheme, clearing
 away the rainbow madness and allowing you to concentrate on what matters the
 most: your code.
 
-![Clarion Default Preview](img/clarion-peach.jpg?raw=true)
-![Clarion Orange Preview](img/clarion-orange.jpg?raw=true)
-![Clarion Yellow Preview](img/clarion-yellow.jpg?raw=true)
+![Clarion Default Preview](img/clarion.png?raw=true)
+![Clarion Orange Preview](img/clarion-orange.png?raw=true)
+![Clarion Yellow Preview](img/clarion-peach.png?raw=true)
 
 ## Guiding Principles
 
 ### Readability is Paramount
-Programmers spend the majority of their careers looking at text. Your eyes are an important resource, so a good colorscheme should be as readable as possible, minimizing eyestrain and maximizing comprehension.
+Programmers spend the majority of their careers looking at text. Your eyes are an important resource, so a good theme should be as readable as possible, minimizing eyestrain and maximizing comprehension. Research overwhelmingly suggests that no single background color is better or worse for readability, so long as an good contrast ratio is maintained with monochromatic text. 
 
-Clarion is inspired by research on readability and color, and seeks to put this research to the test. See [the specification](SPEC.md) for more information.
+*See [the specification](SPEC.md) for more information.*
 
-### Minimal Color Highlighting
-If everything is important, nothing is! You're here to code, aren't you? Most syntax highlighting is simply choosing random colors that seem to work well together. It's an art not a science, and Clarion aims to skew more towards the science side, only highlighting those things which can benefit from it.
+### Minimal Syntax Highlighting
+If everything is important, nothing is! Color is an important tool for conveying important information, but the more it's used, the less meaningful it becomes. There are only a finite amount of colors you can distinguish easily, and the more syntax elements that get a color, the greater the chance of overlap, and the less it will mean. Clarion tries to avoid using color as much as possible, concentrating instead on carefully-chosen font weights for certain landmark elements to help you orient yourself in your ccode.
 
 As semantic highlighting and advanced language server features become more prevelant, Clarion will embrace this preferentially insofar as it is not distracting.
 

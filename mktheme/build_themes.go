@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"html/template"
-	"math"
 	"os"
 	"path/filepath"
 	"strings"
@@ -13,31 +12,6 @@ import (
 
 const themeVersion = `0.0.1`
 
-// CIELAB ΔE* is the latest iteration of the CIE's color distance function, and
-// is intended to meaure the perceived distance between two colors, where a
-// value of 1.0 represents a "just noticeable difference".
-// ref:  https://en.wikipedia.org/wiki/Color_difference#CIEDE2000
-
-type renderTable struct {
-	bgColors,
-	bgColorsTerm map[string][]string
-	fgColors,
-	fgColorsTerm []string
-	conceptColors,
-	conceptColorsTerm map[string]string
-}
-
-func newRenderTable() renderTable {
-	return renderTable{
-		bgColors:          map[string][]string{},
-		bgColorsTerm:      map[string][]string{},
-		fgColors:          []string{},
-		fgColorsTerm:      []string{},
-		conceptColors:     map[string]string{},
-		conceptColorsTerm: map[string]string{},
-	}
-}
-
 type ThemePkg struct {
 	Version       string
 	ThemeContribs []ThemeContrib
@@ -46,6 +20,21 @@ type ThemePkg struct {
 type ThemeContrib struct {
 	Label string
 	File  string
+}
+
+type colorLevels struct {
+	min      colorful.Color
+	enhanced colorful.Color
+	ui       colorful.Color
+}
+
+type colorTable struct {
+	ui            colorful.Color
+	bg            []colorful.Color
+	fg            colorful.Color
+	lightFg       colorful.Color
+	conceptColors map[string]colorLevels
+	ansiColors    map[string]colorful.Color
 }
 
 func buildThemes(specPath string, outputPath string) error {
@@ -58,30 +47,88 @@ func buildThemes(specPath string, outputPath string) error {
 		Version: themeVersion,
 	}
 
-	renderTable := newRenderTable()
+	masterTable := map[string]colorTable{}
 
 	for baseColorName, baseColor := range spec.baseColors {
-		hexVariations, termVariations, err := generateVariations(baseColor, spec.variations, spec.ΔETarget, spec.Lstep, both)
+		// generate background color variations
+		backgroundVariations, err := generateBrightnessVariations(baseColor, spec.variations, spec.ΔETarget, spec.Lstep, darker)
 		if err != nil {
-			return fmt.Errorf("error generating variations for base color %s: %s", baseColorName, err)
+			return err
 		}
-		renderTable.bgColors[baseColorName] = hexVariations
-		renderTable.bgColorsTerm[baseColorName] = termVariations
-	}
 
-	{
-		fgVariationsHex, fgVariationsTerm, err := generateVariations(spec.fgColor, spec.variationsFG, spec.ΔETargetFG, spec.Lstep, lighter)
+		// sanity check the foreground against the darkest background color
+		lowestFGContrast := contrast(spec.fgColor, backgroundVariations[len(backgroundVariations)-1])
+		if lowestFGContrast < 4.5 {
+			return fmt.Errorf("contrast ratio of foreground color (%s) to darkest background variant (%s) is too low %f < 4.5", spec.fgColor.Hex(), backgroundVariations[len(backgroundVariations)-1].Hex(), lowestFGContrast)
+		}
+
+		// get the darkest background variation for calculating minimum contrast
+		// for concept colors and ui elements
+		darkestBackground := backgroundVariations[len(backgroundVariations)-1]
+
+		// generate the theme-specific concept colors
+		cColors := make(map[string]colorLevels)
+		for conceptColorName, conceptColor := range spec.conceptColors {
+			// generate concept colors based on the darkest background variation
+			ccUI, ccMin, ccEnhanced := getLevels(darkestBackground, conceptColor)
+			cColors[conceptColorName] = colorLevels{
+				min:      ccMin,
+				enhanced: ccEnhanced,
+				ui:       ccUI,
+			}
+		}
+
+		// generate the theme-specific ansi colors
+		black := colorful.Color{R: 0, G: 0, B: 0}
+		ansiColors := map[string]colorful.Color{
+			"ansiBlack": black,
+		}
+		blackVariations, err := generateBrightnessVariations(black, 2, 0.02, spec.Lstep, lighter)
 		if err != nil {
-			return fmt.Errorf("error generating variations for foreground color: %s", err)
+			return err
 		}
-		renderTable.fgColors = fgVariationsHex
-		renderTable.fgColorsTerm = fgVariationsTerm
-	}
+		brightBlack := blackVariations[1]
+		if !brightBlack.IsValid() {
+			brightBlack = brightBlack.Clamped()
+		}
+		ansiColors["ansiBrightBlack"] = brightBlack
 
-	for conceptColorName, conceptColorStr := range spec.conceptColors {
-		conceptColor, _ := colorful.Hex(conceptColorStr)
-		renderTable.conceptColors[conceptColorName] = conceptColor.Hex()
-		renderTable.conceptColorsTerm[conceptColorName] = toTerminal(conceptColor)
+		// sanity check brightBlack against the darkest background color
+		brightBlackContrast := contrast(brightBlack, backgroundVariations[len(backgroundVariations)-1])
+		if brightBlackContrast < float64(4.5) {
+			return fmt.Errorf("contrast ratio of ansiBrightBlack color (%s) to darkest background variant (%s) is too low %f < 4.5", brightBlack.Hex(), backgroundVariations[len(backgroundVariations)-1].Hex(), brightBlackContrast)
+		}
+
+		for ansiColorName, ansiColor := range spec.ansiColors {
+			themeAnsi, _, _ := getLevels(darkestBackground, ansiColor)
+			ansiColors["ansiBright"+ansiColorName] = themeAnsi
+			ansiVariations, err := generateBrightnessVariations(themeAnsi, 2, spec.ΔETarget, spec.Lstep, darker)
+			if err != nil {
+				return err
+			}
+			ansiDark := ansiVariations[1]
+			if !ansiDark.IsValid() {
+				ansiDark = ansiDark.Clamped()
+			}
+			ansiColors["ansi"+ansiColorName] = ansiDark
+		}
+
+		//generate a color for ui elements based on ui contrast level for
+		//darkest background variation
+		uiElementColor, _, _ := getLevels(darkestBackground, darkestBackground)
+
+		// generate the lightest possible fg color we can use in the main editor
+		// area
+		_, lightFg, _ := getLevels(baseColor, baseColor)
+
+		masterTable[baseColorName] = colorTable{
+			ui:            uiElementColor,
+			bg:            backgroundVariations,
+			fg:            spec.fgColor,
+			lightFg:       lightFg,
+			conceptColors: cColors,
+			ansiColors:    ansiColors,
+		}
 	}
 
 	for i, baseColor := range spec.themeBases {
@@ -90,56 +137,26 @@ func buildThemes(specPath string, outputPath string) error {
 			themeFileSuffix = ""
 		}
 		ThemeName := "Clarion " + baseColor
+
+		themeTable := masterTable[baseColor]
 		// Create Template functions
 		colorFuncs := template.FuncMap{
 			"themeName": func() string {
 				return ThemeName
 			},
-			"bg": func(offset int) string {
-				center := len(renderTable.bgColors[baseColor]) / 2
-				idx := center + offset
-				if idx < 0 || idx >= len(renderTable.bgColors[baseColor]) {
-					themeLogErr("bg idx out of range: offset: %d idx: %d", offset, idx)
-					return errColor
-				}
-				return renderTable.bgColors[baseColor][idx]
-			},
-			"bg256": func(offset int) string {
-				center := len(renderTable.bgColorsTerm[baseColor]) / 2
-				idx := center + offset
-				if idx < 0 || idx >= len(renderTable.bgColorsTerm[baseColor]) {
-					themeLogErr("bg256 idx out of range: offset: %d idx: %d", offset, idx)
-					return errColor256
-				}
-				return renderTable.bgColorsTerm[baseColor][idx]
-			},
-			"fg": func(offset int) string {
-				if offset < 0 || offset >= len(renderTable.fgColors) {
-					themeLogErr("fg offset out of range: %d", offset)
-					return errColor
-				}
-				return renderTable.fgColors[offset]
-			},
-			"fg256": func(offset int) string {
-				if offset < 0 || offset >= len(renderTable.fgColorsTerm) {
-					themeLogErr("fg256 offset out of range: %d", offset)
-					return errColor
-				}
-				return renderTable.fgColorsTerm[offset]
-			},
-			"alpha": func(pct int, c string) string {
-				// add alpha in hex from range of 0-100%
-				return fmt.Sprintf("%s%02x", c, int(math.Round(float64(pct)*255.0/100.0)))
-			},
+			"bg":       tmplBG(themeTable),
+			"fg":       tmplFG(themeTable),
+			"lightfg":  tmplLightFG(themeTable),
+			"uifg":     tmplUIFG(themeTable),
+			"hex":      tmpl2Hex,
+			"hexalpha": tmpl2HexAlpha,
+			"term":     tmpl2Term,
 		}
-		for conceptColorName := range spec.conceptColors {
-			colorname := conceptColorName
-			colorFuncs[colorname] = func() string {
-				return renderTable.conceptColors[colorname]
-			}
-			colorFuncs[colorname+"256"] = func() string {
-				return renderTable.conceptColorsTerm[colorname]
-			}
+		for conceptColorName := range themeTable.conceptColors {
+			colorFuncs[conceptColorName] = tmplColor(conceptColorName, themeTable)
+		}
+		for ansiColorName := range themeTable.ansiColors {
+			colorFuncs[ansiColorName] = tmplAnsiColor(ansiColorName, themeTable)
 		}
 		themeFilename := fmt.Sprintf("clarion-color-theme%s.json", themeFileSuffix)
 		pkg.ThemeContribs = append(pkg.ThemeContribs, ThemeContrib{

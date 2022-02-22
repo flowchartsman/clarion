@@ -12,19 +12,19 @@
     "contributes": {
         "themes": [
             {
-                "label": "clarion",
+                "label": "Clarion White",
                 "uiTheme": "vs",
                 "path": "./themes/clarion-color-theme.json"
             },
             {
-                "label": "clarion-orange",
+                "label": "Clarion Orange",
                 "uiTheme": "vs",
                 "path": "./themes/clarion-color-theme-orange.json"
             },
             {
-                "label": "clarion-yellow",
+                "label": "Clarion Peach",
                 "uiTheme": "vs",
-                "path": "./themes/clarion-color-theme-yellow.json"
+                "path": "./themes/clarion-color-theme-peach.json"
             }
         ]
     }

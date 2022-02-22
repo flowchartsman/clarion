@@ -6,18 +6,19 @@ import (
 	"os"
 	"strconv"
 	"strings"
+
+	"github.com/lucasb-eyer/go-colorful"
 )
 
 type spec struct {
 	themeBases    []string
-	fgColor       string
-	baseColors    map[string]string
-	conceptColors map[string]string
+	fgColor       colorful.Color
+	baseColors    map[string]colorful.Color
+	conceptColors map[string]colorful.Color
+	ansiColors    map[string]colorful.Color
 	ΔETarget      float64
-	ΔETargetFG    float64
 	Lstep         float64
 	variations    int
-	variationsFG  int
 }
 
 // primitive, expect-like scanner that only works because markdown is easy. If
@@ -28,8 +29,9 @@ func loadSpec(specPath string) (*spec, error) {
 		return nil, err
 	}
 	spec := &spec{
-		baseColors:    map[string]string{},
-		conceptColors: map[string]string{},
+		baseColors:    map[string]colorful.Color{},
+		conceptColors: map[string]colorful.Color{},
+		ansiColors:    map[string]colorful.Color{},
 	}
 	scanner := bufio.NewScanner(file)
 	section := "none"
@@ -54,12 +56,6 @@ func loadSpec(specPath string) (*spec, error) {
 				}
 				spec.ΔETarget = f / 100 //apparently the colorful library is a
 				//couple orders of magnitude smaller than the literature
-			case "ΔETargetFG:":
-				f, err := strconv.ParseFloat(fields[2], 64)
-				if err != nil {
-					return nil, fmt.Errorf("couldn't parse ΔETargetFG as float: %s", err)
-				}
-				spec.ΔETargetFG = f / 100
 			case "LStep:":
 				f, err := strconv.ParseFloat(fields[2], 64)
 				if err != nil {
@@ -72,21 +68,37 @@ func loadSpec(specPath string) (*spec, error) {
 					return nil, fmt.Errorf("couldn't parse Variations as int")
 				}
 				spec.variations = i
-			case "VariationsFG:":
-				i, err := strconv.Atoi(fields[2])
-				if err != nil {
-					return nil, fmt.Errorf("couldn't parse VariationsFG as int")
-				}
-				spec.variationsFG = i
 			case "Hex:":
 				switch section {
 				case "Background Colors":
 					spec.themeBases = append(spec.themeBases, target)
-					spec.baseColors[target] = fields[2]
+					bgHex := fields[2]
+					bgColor, err := colorful.Hex(bgHex)
+					if err != nil {
+						return nil, fmt.Errorf("invalid hex [%s] for background color [%s]", bgHex, target)
+					}
+					spec.baseColors[target] = bgColor
 				case "Foreground Colors":
-					spec.fgColor = fields[2]
+					fgHex := fields[2]
+					fgColor, err := colorful.Hex(fgHex)
+					if err != nil {
+						return nil, fmt.Errorf("invalid hex [%s] for foreground color", fgHex)
+					}
+					spec.fgColor = fgColor
 				case "Conceptual Colors":
-					spec.conceptColors[strings.ToLower(target)] = fields[2]
+					ccHex := fields[2]
+					cColor, err := colorful.Hex(ccHex)
+					if err != nil {
+						return nil, fmt.Errorf("invalid hex [%s] for concept color [%s]", ccHex, target)
+					}
+					spec.conceptColors[strings.ToLower(target)] = cColor
+				case "Terminal Colors":
+					tHex := fields[2]
+					tColor, err := colorful.Hex(tHex)
+					if err != nil {
+						return nil, fmt.Errorf("invalid hex [%s] for terminal color [%s]", tHex, target)
+					}
+					spec.ansiColors[target] = tColor
 				}
 			}
 		}
