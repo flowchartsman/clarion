@@ -15,7 +15,7 @@ So long as contrast is maintained, studies indicate that background hue has mini
 Clarion's primary background color. Provides the highest contrast.
 
 ### Orange
-* Swatch: ![#FFF1D6](https://via.placeholder.com/15/#FFF1D6/000000?text=+)
+* Swatch: ![#fff1d6](https://via.placeholder.com/15/fff1d6/000000?text=+)
 * Hex: #FFF1D6
 
 A relaxing, desaturated orange
