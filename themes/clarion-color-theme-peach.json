@@ -1,7 +1,7 @@
 {
     "name": "Clarion Peach",
 	"type": "light",
-	"semanticHighlighting": false,
+	"semanticHighlighting": true,
     "colors": {
         "window.activeBorder": "#000000",
         "window.inactiveBorder": "#402c40",
@@ -257,6 +257,14 @@
             "settings": {
                 //"foreground":"#6e5a3e",
                 "fontStyle": "bold"
+            }
+        },
+        {
+            "scope": [
+                "support.type.property-name",
+            ],
+            "settings" : {
+                "fontStyle": ""
             }
         }
     ]

@@ -1,7 +1,7 @@
 {
     "name": "Clarion White",
 	"type": "light",
-	"semanticHighlighting": false,
+	"semanticHighlighting": true,
     "colors": {
         "window.activeBorder": "#000000",
         "window.inactiveBorder": "#5a3f5a",
@@ -257,6 +257,14 @@
             "settings": {
                 //"foreground":"#767676",
                 "fontStyle": "bold"
+            }
+        },
+        {
+            "scope": [
+                "support.type.property-name",
+            ],
+            "settings" : {
+                "fontStyle": ""
             }
         }
     ]
