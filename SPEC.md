@@ -16,9 +16,15 @@ Clarion's primary background color. Provides the highest contrast.
 
 ### Orange
 * Swatch: ![#fff1d6](https://via.placeholder.com/15/fff1d6/000000?text=+)
-* Hex: #FFF1D6
+* Hex: #fff1d6
 
-A relaxing, desaturated orange
+### Red
+* Swatch: ![#ffebeb](https://via.placeholder.com/15/ffd8d7/000000?text=+)
+* Hex: #ffebeb
+
+### Blue
+* Swatch: ![#ebf3ff](https://via.placeholder.com/15/d7eeff/000000?text=+)
+* Hex: #ebf3ff
 
 ### Peach
 * Swatch: ![#edd1b0](https://via.placeholder.com/15/edd1b0/000000?text=+)

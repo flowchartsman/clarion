@@ -5,6 +5,7 @@ import (
 	"html/template"
 	"os"
 	"path/filepath"
+	"sort"
 	"strings"
 
 	"github.com/lucasb-eyer/go-colorful"
@@ -181,6 +182,35 @@ func buildThemes(spec *spec, outputPath string) error {
 	}
 	if err := tmpl.ExecuteTemplate(outPkg, "package.json.tmpl", pkg); err != nil {
 		return fmt.Errorf("package template execution error: %v", err)
+	}
+	// generate readme
+	readmePreviews := []map[string]string{}
+	for _, base := range spec.themeBases {
+		readmePreviews = append(readmePreviews, map[string]string{
+			"themename":  "Clarion " + base,
+			"screenshot": fmt.Sprintf("Clarion-%s.jpg", base),
+		})
+	}
+	sort.Slice(readmePreviews, func(i, j int) bool {
+		if readmePreviews[i]["themename"] == "Clarion White" {
+			return true
+		}
+		if readmePreviews[j]["themename"] == "Clarion White" {
+			return false
+		}
+		return readmePreviews[i]["themename"] < readmePreviews[j]["themename"]
+	})
+	tmpl, err = template.New("").ParseFiles(`template/README.md.tmpl`)
+	if err != nil {
+		return err
+	}
+	readmeout, err := os.Create(filepath.Join(outputPath, "README.md"))
+	if err != nil {
+		return err
+	}
+	defer readmeout.Close()
+	if err := tmpl.ExecuteTemplate(readmeout, "README.md.tmpl", readmePreviews); err != nil {
+		return err
 	}
 	return nil
 }

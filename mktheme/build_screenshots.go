@@ -5,10 +5,8 @@ import (
 	"fmt"
 	"html/template"
 	"io"
-	"os"
 	"os/exec"
 	"path/filepath"
-	"sort"
 	"strings"
 	"time"
 )
@@ -78,42 +76,16 @@ func buildScreenshots(spec *spec, outputPath string) error {
 	c := newCmdRunner(2 * time.Second)
 	c.run("osascript", "prep_screenshots.scpt")
 	themeLog("generating screenshots...")
-	readmePreviews := []map[string]string{}
 	for i, s := range themescripts {
 		c.runWithInput(s, "osascript")
 		// need to run it twice for some reason sometimes. vscode debug extension bug maybe?
 		c.runWithInput(s, "osascript")
 		screenshotFilename := "img/Clarion-" + spec.themeBases[i] + ".jpg"
 		c.run("screencapture", "-x", "-R0,23,900,900", filepath.Join(outputPath, screenshotFilename))
-		readmePreviews = append(readmePreviews, map[string]string{
-			"themename":  "Clarion " + spec.themeBases[i],
-			"screenshot": screenshotFilename,
-		})
+
 	}
 	if c.Err() != nil {
 		return c.Err()
-	}
-	themeLog("regenerating readme...")
-	sort.Slice(readmePreviews, func(i, j int) bool {
-		if readmePreviews[i]["themename"] == "Clarion White" {
-			return true
-		}
-		if readmePreviews[j]["themename"] == "Clarion White" {
-			return false
-		}
-		return readmePreviews[i]["themename"] < readmePreviews[j]["themename"]
-	})
-	tmpl, err = template.New("").ParseFiles(`template/README.md.tmpl`)
-	if err != nil {
-		return err
-	}
-	readmeout, err := os.Create(filepath.Join(outputPath, "README.md"))
-	if err != nil {
-		return err
-	}
-	defer readmeout.Close()
-	if err := tmpl.ExecuteTemplate(readmeout, "README.md.tmpl", readmePreviews); err != nil {
-		return err
 	}
 	themeLog("done!")
 	return nil
