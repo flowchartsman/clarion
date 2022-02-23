@@ -21,3 +21,10 @@ buildtheme : buildmktheme
 clean :
 	$(call chdir,mktheme)
 	go clean
+
+.PHONY: install_local
+inst_dir:=$(HOME)/.vscode/extensions/clarion_dev
+install_local :
+	mkdir -p $(inst_dir)
+	cp -r icon.png package.json themes $(inst_dir)
+	@echo "you may wish to restart vscode"
