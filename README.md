@@ -22,7 +22,7 @@ If everything is important, nothing is! Color is an important tool for conveying
 As semantic highlighting and advanced language server features become more prevelant, Clarion will embrace this preferentially insofar as it is not distracting.
 
 ### Spec-Driven
-A specification keeps things centralized and consistent. Inspired by the [Dracula](https://draculatheme.com/) Theme's [specification][https://spec.draculatheme.com/]. Clarion is driven by a [similar spec](SPEC.md), and in fact uses this doc to generate the theme itself, making the spec the source of truth.
+A specification keeps things centralized and consistent. Inspired by the [Dracula](https://draculatheme.com/) Theme's [specification]([https://spec.draculatheme.com/). Clarion is driven by a [similar spec](SPEC.md), and in fact uses this doc to generate the theme itself, making the spec the source of truth.
 
 ### Conceptual Palette
 Rather than simply picking values from a color palette and arbitrarily assigning them to syntax or UI elements, Clarion seeks to define a "conceptual palette", where each color has a specific meaning that applies consistently across contexts.
