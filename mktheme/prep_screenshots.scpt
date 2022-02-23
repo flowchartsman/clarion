@@ -10,7 +10,7 @@ end tell
 activate application "Code"
 tell application "System Events"
     tell process "Code"
-        set the size of front window to {900,900}
+        set the size of front window to {1300,900}
     end tell
 end tell
 tell application "System Events"

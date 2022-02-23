@@ -81,7 +81,7 @@ func buildScreenshots(spec *spec, outputPath string) error {
 		// need to run it twice for some reason sometimes. vscode debug extension bug maybe?
 		c.runWithInput(s, "osascript")
 		screenshotFilename := "img/Clarion-" + spec.themeBases[i] + ".jpg"
-		c.run("screencapture", "-x", "-R0,23,900,900", filepath.Join(outputPath, screenshotFilename))
+		c.run("screencapture", "-x", "-R0,23,1300,900", filepath.Join(outputPath, screenshotFilename))
 
 	}
 	if c.Err() != nil {
