@@ -24,15 +24,24 @@ func themeLogFatal(err error) {
 func main() {
 	log.SetFlags(0)
 	var watchFiles bool
+	var makeScreenshots bool
 	flag.BoolVar(&watchFiles, "watch", false, "watch files for changes and rebuild theme")
+	flag.BoolVar(&makeScreenshots, "makeshots", false, "make the screenshots using applescript")
+	if watchFiles && makeScreenshots {
+		log.Fatalf("cannot use -watch and -makeshots together")
+	}
 	flag.Parse()
 	if len(flag.Args()) != 2 {
 		log.Fatalf("usage: mktheme <spec markdown file> <output directory>")
 	}
 	specPath := flag.Args()[0]
 	outputPath := flag.Args()[1]
+	spec, err := loadSpec(specPath)
+	if err != nil {
+		log.Fatalf("error loading specification: %s", err)
+	}
 	themeLog("building themes...")
-	if err := buildThemes(specPath, outputPath); err != nil {
+	if err := buildThemes(spec, outputPath); err != nil {
 		themeLogFatal(err)
 	}
 	themeLog("complete!")
@@ -48,7 +57,7 @@ func main() {
 				select {
 				case <-w.Event:
 					themeLog("rebuilding themes...")
-					if err := buildThemes(specPath, outputPath); err != nil {
+					if err := buildThemes(spec, outputPath); err != nil {
 						themeLogFatal(err)
 					}
 					themeLog("complete!")
@@ -60,7 +69,12 @@ func main() {
 			}
 		}()
 		if err := w.Start(time.Millisecond * 500); err != nil {
-			log.Fatalln(err)
+			themeLogFatal(err)
+		}
+	}
+	if makeScreenshots {
+		if err := buildScreenshots(spec, outputPath); err != nil {
+			themeLogFatal(err)
 		}
 	}
 }

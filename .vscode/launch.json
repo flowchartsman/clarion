@@ -10,7 +10,10 @@
             "type": "extensionHost",
             "request": "launch",
             "args": [
-                "--extensionDevelopmentPath=${workspaceFolder}"
+                "${workspaceFolder}",
+                "--extensionDevelopmentPath=${workspaceFolder}",
+                "--goto",
+                "${workspaceFolder}/mktheme/build_themes.go:98:48"
             ],
             "preLaunchTask": "Watch Theme",
             "postDebugTask": "Terminate Tasks",

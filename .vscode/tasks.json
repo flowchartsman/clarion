@@ -13,16 +13,16 @@
             },
             "command": "go",
             "args": [
-                "build",
+                "build"
             ],
             "problemMatcher": [
-                "$go",
+                "$go"
             ]
         },
         {
             "label": "Watch Theme",
             "dependsOn": [
-                "Build mktheme",
+                "Build mktheme"
             ],
             "dependsOrder": "sequence",
             "type": "shell",
@@ -34,25 +34,28 @@
             "args": [
                 "-watch",
                 "../SPEC.md",
-                ".." 
+                ".."
             ],
             "problemMatcher": {
                 "owner": "mktheme",
-                "fileLocation": ["relative", "${workspaceFolder}"],
-                "pattern":{
-                    "regexp": "^mktheme error:",
+                "fileLocation": [
+                    "relative",
+                    "${workspaceFolder}"
+                ],
+                "pattern": {
+                    "regexp": "^mktheme error:"
                 },
                 "background": {
                     "activeOnStart": true,
                     "beginsPattern": "building themes...",
-                    "endsPattern": "complete!",
-                },
+                    "endsPattern": "complete!"
+                }
             }
         },
         {
             "label": "Rebuild Theme",
             "dependsOn": [
-                "Build mktheme",
+                "Build mktheme"
             ],
             "dependsOrder": "sequence",
             "type": "shell",
@@ -63,22 +66,35 @@
             "command": "./mktheme",
             "args": [
                 "../SPEC.md",
-                ".." 
+                ".."
             ],
             "problemMatcher": {
                 "owner": "mktheme",
-                "fileLocation": ["relative", "${workspaceFolder}"],
-                "pattern":{
-                    "regexp": "^mktheme error:",
-                } 
+                "fileLocation": [
+                    "relative",
+                    "${workspaceFolder}"
+                ],
+                "pattern": {
+                    "regexp": "^mktheme error:"
+                }
             }
+        },
+        {
+            "label": "colors",
+            "type": "shell",
+            "options": {
+                "cwd": "${workspaceFolder}/build"
+            },
+            "isBackground": false,
+            "command": "./colors.sh",
+            "problemMatcher": []
         },
         {
             "label": "Terminate Tasks",
             "command": "echo ${input:terminate}",
             "type": "shell",
             "problemMatcher": []
-        },
+        }
     ],
     "inputs": [
         {

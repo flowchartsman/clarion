@@ -14,7 +14,7 @@
             {
                 "label": "Clarion White",
                 "uiTheme": "vs",
-                "path": "./themes/clarion-color-theme.json"
+                "path": "./themes/clarion-color-theme-white.json"
             },
             {
                 "label": "Clarion Orange",

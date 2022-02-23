@@ -1,0 +1,27 @@
+activate application "Code"
+tell application "System Events"
+   keystroke "p" using {command down, shift down}
+   delay 1
+   keystroke "p"
+   keystroke "r"
+   keystroke "e"
+   keystroke "f"
+   keystroke "c"
+   keystroke "o"
+   keystroke "l"
+   keystroke "o"
+   keystroke "r"
+   key code 36
+   delay 3
+   keystroke "c"
+   keystroke "l"
+   keystroke "a"
+   keystroke "r"
+   keystroke "i"
+   keystroke "o"
+   keystroke "n"
+   {{- range .themechars }}
+   keystroke "{{.}}"
+   {{- end}}
+   key code 36
+end tell

@@ -37,12 +37,7 @@ type colorTable struct {
 	ansiColors    map[string]colorful.Color
 }
 
-func buildThemes(specPath string, outputPath string) error {
-	spec, err := loadSpec(specPath)
-	if err != nil {
-		return fmt.Errorf("error loading specification: %s", err)
-	}
-
+func buildThemes(spec *spec, outputPath string) error {
 	pkg := &ThemePkg{
 		Version: themeVersion,
 	}
@@ -131,11 +126,8 @@ func buildThemes(specPath string, outputPath string) error {
 		}
 	}
 
-	for i, baseColor := range spec.themeBases {
+	for _, baseColor := range spec.themeBases {
 		themeFileSuffix := "-" + strings.ToLower(baseColor)
-		if i == 0 {
-			themeFileSuffix = ""
-		}
 		ThemeName := "Clarion " + baseColor
 
 		themeTable := masterTable[baseColor]
@@ -168,7 +160,6 @@ func buildThemes(specPath string, outputPath string) error {
 		if err != nil {
 			return fmt.Errorf("unable to create output file %q: %v", outPath, err)
 		}
-		defer outFile.Close()
 		tmpl, err := template.New("").Funcs(colorFuncs).ParseFiles("template/clarion-color-theme.json")
 		if err != nil {
 			return fmt.Errorf("template parse error: %v", err)
@@ -176,6 +167,7 @@ func buildThemes(specPath string, outputPath string) error {
 		if err := tmpl.ExecuteTemplate(outFile, "clarion-color-theme.json", nil); err != nil {
 			return fmt.Errorf("template execution error: %v", err)
 		}
+		outFile.Close()
 	}
 	pkgPath := filepath.Join(outputPath, "package.json")
 	outPkg, err := os.Create(pkgPath)
