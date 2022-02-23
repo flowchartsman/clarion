@@ -10,7 +10,7 @@
             "type": "extensionHost",
             "request": "launch",
             "args": [
-                "${workspaceFolder}",
+                "${workspaceFolder}/mktheme",
                 "--extensionDevelopmentPath=${workspaceFolder}",
                 "--goto",
                 "${workspaceFolder}/mktheme/build_themes.go:98:48"
@@ -23,8 +23,8 @@
             "type": "extensionHost",
             "request": "launch",
             "args": [
-                "${workspaceFolder}",
-                "--extensionDevelopmentPath=${workspaceFolder}/",
+                "${workspaceFolder}/mktheme",
+                "--extensionDevelopmentPath=${workspaceFolder}",
                 "--goto",
                 "${workspaceFolder}/mktheme/build_themes.go:98:48"
             ],

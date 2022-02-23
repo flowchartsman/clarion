@@ -1,6 +1,6 @@
 tell application "System Events"
-    if exists (window "[Extension Development Host] - build_themes.go — clarion" of process "Code") then
-        set clarionWindow to (window "[Extension Development Host] - build_themes.go — clarion" of process "Code")
+    if exists (window "[Extension Development Host] - build_themes.go — mktheme" of process "Code") then
+        set clarionWindow to (window "[Extension Development Host] - build_themes.go — mktheme" of process "Code")
         perform action "AXRaise" of clarionWindow
         set position of clarionWindow to {0, 0}
     else
@@ -16,22 +16,36 @@ end tell
 tell application "System Events"
    keystroke "p" using {command down, shift down}
    delay 1
-   keystroke "r"
-   keystroke "u"
-   keystroke "n"
-   keystroke " "
    keystroke "t"
+   keystroke "e"
+   keystroke "r"
+   keystroke "m"
+   keystroke "i"
+   keystroke "n"
    keystroke "a"
-   keystroke "s"
-   keystroke "k"
+   keystroke "l"
+   keystroke "c"
+   keystroke "r"
+   keystroke "e"
    key code 36
    delay 3
+   keystroke "."
+   keystroke "/"
+   keystroke "b"
+   keystroke "u"
+   keystroke "i"
+   keystroke "l"
+   keystroke "d"
+   keystroke "/"
    keystroke "c"
    keystroke "o"
    keystroke "l"
    keystroke "o"
    keystroke "r"
    keystroke "s"
+   keystroke "."
+   keystroke "s"
+   keystroke "h"
    key code 36
 end tell
 --do shell script "screencapture -x -R0,23,900,900 \"foo.png\""
