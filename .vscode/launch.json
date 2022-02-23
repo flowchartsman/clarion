@@ -19,6 +19,19 @@
             "postDebugTask": "Terminate Tasks",
         },
         {
+            "name": "Rebuild Theme and Screenshots",
+            "type": "extensionHost",
+            "request": "launch",
+            "args": [
+                "${workspaceFolder}",
+                "--extensionDevelopmentPath=${workspaceFolder}/",
+                "--goto",
+                "${workspaceFolder}/mktheme/build_themes.go:98:48"
+            ],
+            "preLaunchTask": "Rebuild Everything",
+            "postDebugTask": "Terminate Tasks",
+        },
+        {
             "name": "Debug mktheme",
             "type": "go",
             "request": "launch",

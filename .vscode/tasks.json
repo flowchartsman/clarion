@@ -53,7 +53,7 @@
             }
         },
         {
-            "label": "Rebuild Theme",
+            "label": "Rebuild Everything",
             "dependsOn": [
                 "Build mktheme"
             ],
@@ -62,9 +62,10 @@
             "options": {
                 "cwd": "${workspaceFolder}/mktheme"
             },
-            "isBackground": false,
+            "isBackground": true,
             "command": "./mktheme",
             "args": [
+                "-makeshots",
                 "../SPEC.md",
                 ".."
             ],
@@ -76,6 +77,11 @@
                 ],
                 "pattern": {
                     "regexp": "^mktheme error:"
+                },
+                "background": {
+                    "activeOnStart": true,
+                    "beginsPattern": "building themes...",
+                    "endsPattern": "complete!"
                 }
             }
         },
