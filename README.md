@@ -5,11 +5,16 @@ Clarion is a mostly-monochromatic, minimally-highlighted colorscheme, clearing
 away the rainbow madness and allowing you to concentrate on what matters the
 most: your code.
 
-<img alt="Clarion White Preview" src="https://raw.githubusercontent.com/flowchartsman/clarion/main/img/Clarion-White.jpg" width="300" />
-<img alt="Clarion Blue Preview" src="https://raw.githubusercontent.com/flowchartsman/clarion/main/img/Clarion-Blue.jpg" width="300" />
-<img alt="Clarion Orange Preview" src="https://raw.githubusercontent.com/flowchartsman/clarion/main/img/Clarion-Orange.jpg" width="300" />
-<img alt="Clarion Peach Preview" src="https://raw.githubusercontent.com/flowchartsman/clarion/main/img/Clarion-Peach.jpg" width="300" />
-<img alt="Clarion Red Preview" src="https://raw.githubusercontent.com/flowchartsman/clarion/main/img/Clarion-Red.jpg" width="300" />
+<img alt="Clarion White Preview"
+src="https://raw.githubusercontent.com/flowchartsman/clarion/main/img/Clarion-White.jpg" />
+<img alt="Clarion Blue Preview"
+src="https://raw.githubusercontent.com/flowchartsman/clarion/main/img/Clarion-Blue.jpg" width="300" />
+<img alt="Clarion Orange Preview"
+src="https://raw.githubusercontent.com/flowchartsman/clarion/main/img/Clarion-Orange.jpg" width="300" />
+<img alt="Clarion Peach Preview"
+src="https://raw.githubusercontent.com/flowchartsman/clarion/main/img/Clarion-Peach.jpg" width="300" />
+<img alt="Clarion Red Preview"
+src="https://raw.githubusercontent.com/flowchartsman/clarion/main/img/Clarion-Red.jpg" width="300" />
 
 ## Guiding Principles
 

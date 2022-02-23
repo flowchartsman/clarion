@@ -4,8 +4,9 @@
 Clarion is a mostly-monochromatic, minimally-highlighted colorscheme, clearing
 away the rainbow madness and allowing you to concentrate on what matters the
 most: your code.
-{{ range .}}
-<img alt="{{.themename }} Preview" src="https://raw.githubusercontent.com/flowchartsman/clarion/main/img/{{.screenshot}}" width="300" />
+{{ range $index, $element := .}}
+<img alt="{{.themename }} Preview"
+src="https://raw.githubusercontent.com/flowchartsman/clarion/main/img/{{.screenshot}}" {{ if $index}}width="300" {{end}}/>
 {{- end}}
 
 ## Guiding Principles
