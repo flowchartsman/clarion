@@ -1,4 +1,5 @@
 # Clarion - A Monochrome Theme Inspired By 🧑‍🔬
+![Clarion Logo](img/logo.png?raw=true)
 Clarion is a mostly-monochromatic, minimally-highlighted colorscheme, clearing
 away the rainbow madness and allowing you to concentrate on what matters the
 most: your code.
