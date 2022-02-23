@@ -27,7 +27,10 @@
             "dependsOrder": "sequence",
             "type": "shell",
             "options": {
-                "cwd": "${workspaceFolder}/mktheme"
+                "cwd": "${workspaceFolder}/mktheme",
+                "env": {
+                    "CLARION_DEBUG": "1"
+                }
             },
             "isBackground": true,
             "command": "./mktheme",
@@ -60,7 +63,10 @@
             "dependsOrder": "sequence",
             "type": "shell",
             "options": {
-                "cwd": "${workspaceFolder}/mktheme"
+                "cwd": "${workspaceFolder}/mktheme",
+                "env": {
+                    "CLARION_DEBUG": "1"
+                }
             },
             "isBackground": true,
             "command": "./mktheme",

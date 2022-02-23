@@ -38,8 +38,15 @@ func (c *cmdRunner) runWithInput(input []byte, cmd string, args ...string) *cmdR
 				inpipe.Close()
 			}()
 		}
+		cmdStr := cmd + " " + strings.Join(args, " ")
+		themeDebug("run: %s", cmdStr)
 		if err := ec.Run(); err != nil {
-			c.err = fmt.Errorf("command `%s %s` failed: %s", cmd, strings.Join(args, " "), err)
+			output, _ := ec.CombinedOutput()
+			outputStr := string(output)
+			if outputStr == "" {
+				outputStr = "<NO OUTPUT>"
+			}
+			c.err = fmt.Errorf("command `%s` failed: %s - %s", cmdStr, err, outputStr)
 		} else {
 			time.Sleep(c.pause)
 		}

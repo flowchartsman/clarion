@@ -3,14 +3,24 @@ package main
 import (
 	"flag"
 	"log"
+	"os"
+	"strings"
 	"time"
 
 	"github.com/radovskyb/watcher"
 	//"text/template"
 )
 
+var doDebug bool
+
 func themeLog(format string, v ...interface{}) {
 	log.Printf("mktheme: "+format, v...)
+}
+
+func themeDebug(format string, v ...interface{}) {
+	if doDebug {
+		themeLog(format, v...)
+	}
 }
 
 func themeLogErr(format string, v ...interface{}) {
@@ -23,6 +33,11 @@ func themeLogFatal(err error) {
 
 func main() {
 	log.SetFlags(0)
+	dbg := strings.ToLower(os.Getenv("CLARION_DEBUG"))
+	switch dbg {
+	case "y", "yes", "true", "1":
+		doDebug = true
+	}
 	var watchFiles bool
 	var makeScreenshots bool
 	flag.BoolVar(&watchFiles, "watch", false, "watch files for changes and rebuild theme")

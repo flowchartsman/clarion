@@ -45,7 +45,7 @@ func getLevels(bg, fg colorful.Color) (ui, minimum, enhanced colorful.Color) {
 	for i := 0; i < 3; i++ {
 		for contrast(bg, current) < targetContrasts[i] {
 			if current.R == 0 && current.G == 0 && current.B == 0 {
-				themeLog("fg color has bottomed out bg[%s] fg[%s] variant[%s]", bg.Hex(), fg.Hex(), levelStr[i])
+				themeDebug("fg color has bottomed out bg[%s] fg[%s] variant[%s]", bg.Hex(), fg.Hex(), levelStr[i])
 				for ii := i; ii < 3; ii++ {
 					*outputs[ii] = current
 				}
