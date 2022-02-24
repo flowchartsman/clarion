@@ -63,7 +63,7 @@ func (c *cmdRunner) Err() error {
 }
 
 func buildScreenshots(spec *spec, outputPath string) error {
-	tmpl, err := template.New("").ParseFiles(`template/change_theme.scpt.tmpl`)
+	tmpl, err := template.New("").ParseFiles(`screenshot_scripts/change_theme.scpt.tmpl`)
 	if err != nil {
 		return err
 	}
@@ -81,7 +81,7 @@ func buildScreenshots(spec *spec, outputPath string) error {
 	time.Sleep(5 * time.Second)
 	themeLog("prepping for screenshots...")
 	c := newCmdRunner(2 * time.Second)
-	c.run("osascript", "prep_screenshots.scpt")
+	c.run("osascript", "screenshot_scripts/prep_screenshots.scpt")
 	themeLog("generating screenshots...")
 	for i, s := range themescripts {
 		c.runWithInput(s, "osascript")
@@ -89,8 +89,8 @@ func buildScreenshots(spec *spec, outputPath string) error {
 		c.runWithInput(s, "osascript")
 		screenshotFilename := "img/Clarion-" + spec.themeBases[i] + ".jpg"
 		c.run("screencapture", "-x", "-R0,23,1300,900", filepath.Join(outputPath, screenshotFilename))
-
 	}
+	c.run("osascript", "screenshot_scripts/close_window.scpt")
 	if c.Err() != nil {
 		return c.Err()
 	}

@@ -16,6 +16,29 @@ end tell
 tell application "System Events"
    keystroke "p" using {command down, shift down}
    delay 1
+   -- kill all old terminals
+   keystroke "p" using {command down, shift down}
+   delay 1
+   keystroke "t"
+   keystroke "e"
+   keystroke "r"
+   keystroke "m"
+   keystroke "i"
+   keystroke "n"
+   keystroke "a"
+   keystroke "l"
+   keystroke "k"
+   keystroke "i"
+   keystroke "l"
+   keystroke "l"
+   keystroke "a"
+   keystroke "l"
+   keystroke "l"
+   key code 36
+   delay 3
+   -- Create new terminal for colors
+   keystroke "p" using {command down, shift down}
+   delay 1
    keystroke "t"
    keystroke "e"
    keystroke "r"
@@ -31,11 +54,24 @@ tell application "System Events"
    delay 3
    keystroke "."
    keystroke "/"
-   keystroke "b"
-   keystroke "u"
+   keystroke "s"
+   keystroke "c"
+   keystroke "r"
+   keystroke "e"
+   keystroke "e"
+   keystroke "n"
+   keystroke "s"
+   keystroke "h"
+   keystroke "o"
+   keystroke "t"
+   keystroke "_"
+   keystroke "s"
+   keystroke "c"
+   keystroke "r"
    keystroke "i"
-   keystroke "l"
-   keystroke "d"
+   keystroke "p"
+   keystroke "t"
+   keystroke "s"
    keystroke "/"
    keystroke "c"
    keystroke "o"
@@ -47,6 +83,9 @@ tell application "System Events"
    keystroke "s"
    keystroke "h"
    key code 36
+   -- switch back to the editor
+   delay 1
+   key code 18 using control down
 end tell
 --do shell script "screencapture -x -R0,23,900,900 \"foo.png\""
 --tell application "System Events"

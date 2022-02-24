@@ -26,7 +26,7 @@
                 "${workspaceFolder}/mktheme",
                 "--extensionDevelopmentPath=${workspaceFolder}",
                 "--goto",
-                "${workspaceFolder}/mktheme/build_themes.go:98:48"
+                "${workspaceFolder}/mktheme/build_themes.go:98:63"
             ],
             "preLaunchTask": "Rebuild Everything",
             "postDebugTask": "Terminate Tasks",
