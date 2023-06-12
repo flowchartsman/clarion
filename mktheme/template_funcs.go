@@ -13,7 +13,7 @@ import (
 // For example, if you want the hex color for bg 0, it would be {{bg 0|hex}},
 // whereas for the 256 color terminal version, you would want {{bg 0|term}}
 
-var errColor = colorful.Hsl(300, 1, 0.5) //ugly ol' magenta
+var errColor = colorful.Hsl(300, 1, 0.5) // ugly ol' magenta
 
 func tmplBG(table colorTable) func(int) colorful.Color {
 	return func(offset int) colorful.Color {
@@ -34,6 +34,8 @@ func tmplColor(colorName string, table colorTable) func(string) colorful.Color {
 			return table.conceptColors[colorName].enhanced
 		case "ui":
 			return table.conceptColors[colorName].ui
+		case "base":
+			return table.conceptColors[colorName].base
 		default:
 			themeLogErr(`invalid contrast level %q for color %q, must be one of [min,enhanced,ui]`, contrastLevel, colorName)
 			return errColor
@@ -70,6 +72,10 @@ func tmpl2Hex(color colorful.Color) string {
 		return color.Clamped().Hex()
 	}
 	return color.Hex()
+}
+
+func tmpl2HexTrunc(color colorful.Color) string {
+	return tmpl2Hex(color)[1:]
 }
 
 func tmpl2HexAlpha(transparencyPct float64, color colorful.Color) string {

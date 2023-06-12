@@ -24,6 +24,7 @@ type ThemeContrib struct {
 }
 
 type colorLevels struct {
+	base     colorful.Color
 	min      colorful.Color
 	enhanced colorful.Color
 	ui       colorful.Color
@@ -68,6 +69,7 @@ func buildThemes(spec *spec, outputPath string) error {
 			// generate concept colors based on the darkest background variation
 			ccUI, ccMin, ccEnhanced := getLevels(darkestBackground, conceptColor)
 			cColors[conceptColorName] = colorLevels{
+				base:     conceptColor,
 				min:      ccMin,
 				enhanced: ccEnhanced,
 				ui:       ccUI,
@@ -109,8 +111,8 @@ func buildThemes(spec *spec, outputPath string) error {
 			ansiColors["ansi"+ansiColorName] = ansiDark
 		}
 
-		//generate a color for ui elements based on ui contrast level for
-		//darkest background variation
+		// generate a color for ui elements based on ui contrast level for
+		// darkest background variation
 		uiElementColor, _, _ := getLevels(darkestBackground, darkestBackground)
 
 		// generate the lightest possible fg color we can use in the main editor
@@ -142,6 +144,7 @@ func buildThemes(spec *spec, outputPath string) error {
 			"lightfg":  tmplLightFG(themeTable),
 			"uifg":     tmplUIFG(themeTable),
 			"hex":      tmpl2Hex,
+			"hext":     tmpl2HexTrunc,
 			"hexalpha": tmpl2HexAlpha,
 			"term":     tmpl2Term,
 		}
@@ -200,7 +203,15 @@ func buildThemes(spec *spec, outputPath string) error {
 		}
 		return readmePreviews[i]["themename"] < readmePreviews[j]["themename"]
 	})
-	tmpl, err = template.New("").ParseFiles(`template/README.md.tmpl`)
+	colorFuncs := template.FuncMap{
+		"hext": tmpl2HexTrunc,
+	}
+	themeTable := masterTable["White"]
+	for conceptColorName := range themeTable.conceptColors {
+		colorFuncs[conceptColorName] = tmplColor(conceptColorName, themeTable)
+	}
+
+	tmpl, err = template.New("").Funcs(colorFuncs).ParseFiles(`template/README.md.tmpl`)
 	if err != nil {
 		return err
 	}
