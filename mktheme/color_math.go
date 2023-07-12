@@ -37,7 +37,7 @@ func contrast(c1 colorful.Color, c2 colorful.Color) float64 {
 
 const lStep = 0.001
 
-func getLevels(bg, fg colorful.Color) (ui, minimum, enhanced colorful.Color) {
+func getContrastingColors(bg, fg colorful.Color) (ui, minimum, enhanced colorful.Color) {
 	current := fg
 	targetContrasts := [3]float64{3.0, 4.5, 7}
 	outputs := [3]*colorful.Color{&ui, &minimum, &enhanced}
@@ -70,26 +70,22 @@ func generateBrightnessVariations(baseColor colorful.Color, numVariations int, �
 	lastVariation := baseColor
 	for i := 0; i < numVariations; i++ {
 		variation := lastVariation
-		if i == 0 {
-			variation = baseColor
-		} else {
-			var distance float64
-			for distance < ΔETarget {
-				l, a, b := variation.Lab()
-				if direction == lighter {
-					l += LStep
-				} else {
-					l -= LStep
-				}
-				switch {
-				case l >= 100:
-					return nil, fmt.Errorf("overflow L for variant %d", i)
-				case l <= 0:
-					return nil, fmt.Errorf("underflow L for variant %d", i)
-				}
-				variation = colorful.Lab(l, a, b)
-				distance = lastVariation.DistanceCIEDE2000(variation)
+		var distance float64
+		for distance < ΔETarget {
+			l, a, b := variation.Lab()
+			if direction == lighter {
+				l += LStep
+			} else {
+				l -= LStep
 			}
+			switch {
+			case l >= 100:
+				return nil, fmt.Errorf("overflow L for variant %d", i)
+			case l <= 0:
+				return nil, fmt.Errorf("underflow L for variant %d", i)
+			}
+			variation = colorful.Lab(l, a, b)
+			distance = lastVariation.DistanceCIEDE2000(variation)
 		}
 		if !variation.IsValid() {
 			variation = variation.Clamped()
@@ -98,4 +94,20 @@ func generateBrightnessVariations(baseColor colorful.Color, numVariations int, �
 		lastVariation = variation
 	}
 	return variations, nil
+}
+
+func getNextBrightest(baseColor colorful.Color, ΔETarget float64, LStep float64) (colorful.Color, error) {
+	brigherColors, err := generateBrightnessVariations(baseColor, 1, ΔETarget, LStep, lighter)
+	if err != nil {
+		return colorful.Color{}, err
+	}
+	return brigherColors[0], nil
+}
+
+func getNextDarkest(baseColor colorful.Color, ΔETarget float64, LStep float64) (colorful.Color, error) {
+	darkerColors, err := generateBrightnessVariations(baseColor, 1, ΔETarget, LStep, darker)
+	if err != nil {
+		return colorful.Color{}, err
+	}
+	return darkerColors[0], nil
 }

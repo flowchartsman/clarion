@@ -36,8 +36,7 @@
             "command": "./mktheme",
             "args": [
                 "-watch",
-                "../SPEC.md",
-                ".."
+                "../SPEC.md"
             ],
             "problemMatcher": {
                 "owner": "mktheme",
@@ -110,10 +109,10 @@
     ],
     "inputs": [
         {
-          "id": "terminate",
-          "type": "command",
-          "command": "workbench.action.tasks.terminate",
-          "args": "terminateAll"
+            "id": "terminate",
+            "type": "command",
+            "command": "workbench.action.tasks.terminate",
+            "args": "terminateAll"
         }
     ]
 }

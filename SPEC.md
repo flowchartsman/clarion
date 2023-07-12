@@ -89,13 +89,13 @@ Then assigned a value based off of the following table:
 ## Color Permutations
 * ΔETarget: 3
 * LStep: 0.005
-* Variations: 10
+* Variations: 4
 
 To generate lighter or darker variants, colors are translated along the L (lightniess) axis of the CIELAB color space until they are "noticeably different", as measured by the CIE Distance metric ΔE* derived using CIEDE2000.[[5]][[6]]
 
 A ΔE* of 1.0 is described as a "just noticable difference" (JND), so Clarion opts for a higher target **ΔETarget** in an attempt to provide greater distinctions. Currently this is done by increasing or decreasing the L value by **LStep** until ΔE* to the prior color meets or exceeds **ΔETarget**.
 
-Background colors get **Variations**/2 lighter variants and **Variations**/2 darker ones. Foreground colors get **Variations** lighter variants.
+Background colors get **Variations** lighter variants and **Variations** darker ones. Foreground colors get **Variations** lighter variants.
 
 ## Conceptual Colors
 TODO: Derivation

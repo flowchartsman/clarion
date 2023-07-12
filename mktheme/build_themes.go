@@ -1,17 +1,15 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
 	"html/template"
+	"io"
 	"os"
 	"path/filepath"
+	"regexp"
 	"sort"
-	"strings"
-
-	"github.com/lucasb-eyer/go-colorful"
 )
-
-const themeVersion = `0.0.1`
 
 type ThemePkg struct {
 	Version       string
@@ -23,163 +21,48 @@ type ThemeContrib struct {
 	File  string
 }
 
-type colorLevels struct {
-	base     colorful.Color
-	min      colorful.Color
-	enhanced colorful.Color
-	ui       colorful.Color
-}
-
-type colorTable struct {
-	ui            colorful.Color
-	bg            []colorful.Color
-	fg            colorful.Color
-	lightFg       colorful.Color
-	conceptColors map[string]colorLevels
-	ansiColors    map[string]colorful.Color
-}
-
-func buildThemes(spec *spec, outputPath string) error {
+func buildThemes(config *MkthemeConfig, spec *spec) error {
 	pkg := &ThemePkg{
-		Version: themeVersion,
+		Version: config.themeVersion,
 	}
 
-	masterTable := map[string]colorTable{}
-
-	for baseColorName, baseColor := range spec.baseColors {
-		// generate background color variations
-		backgroundVariations, err := generateBrightnessVariations(baseColor, spec.variations, spec.ΔETarget, spec.Lstep, darker)
-		if err != nil {
-			return err
-		}
-
-		// sanity check the foreground against the darkest background color
-		lowestFGContrast := contrast(spec.fgColor, backgroundVariations[len(backgroundVariations)-1])
-		if lowestFGContrast < 4.5 {
-			return fmt.Errorf("contrast ratio of foreground color (%s) to darkest background variant (%s) is too low %f < 4.5", spec.fgColor.Hex(), backgroundVariations[len(backgroundVariations)-1].Hex(), lowestFGContrast)
-		}
-
-		// get the darkest background variation for calculating minimum contrast
-		// for concept colors and ui elements
-		darkestBackground := backgroundVariations[len(backgroundVariations)-1]
-
-		// generate the theme-specific concept colors
-		cColors := make(map[string]colorLevels)
-		for conceptColorName, conceptColor := range spec.conceptColors {
-			// generate concept colors based on the darkest background variation
-			ccUI, ccMin, ccEnhanced := getLevels(darkestBackground, conceptColor)
-			cColors[conceptColorName] = colorLevels{
-				base:     conceptColor,
-				min:      ccMin,
-				enhanced: ccEnhanced,
-				ui:       ccUI,
-			}
-		}
-
-		// generate the theme-specific ansi colors
-		black := colorful.Color{R: 0, G: 0, B: 0}
-		ansiColors := map[string]colorful.Color{
-			"ansiBlack": black,
-		}
-		blackVariations, err := generateBrightnessVariations(black, 2, 0.02, spec.Lstep, lighter)
-		if err != nil {
-			return err
-		}
-		brightBlack := blackVariations[1]
-		if !brightBlack.IsValid() {
-			brightBlack = brightBlack.Clamped()
-		}
-		ansiColors["ansiBrightBlack"] = brightBlack
-
-		// sanity check brightBlack against the darkest background color
-		brightBlackContrast := contrast(brightBlack, backgroundVariations[len(backgroundVariations)-1])
-		if brightBlackContrast < float64(4.5) {
-			return fmt.Errorf("contrast ratio of ansiBrightBlack color (%s) to darkest background variant (%s) is too low %f < 4.5", brightBlack.Hex(), backgroundVariations[len(backgroundVariations)-1].Hex(), brightBlackContrast)
-		}
-
-		for ansiColorName, ansiColor := range spec.ansiColors {
-			themeAnsi, _, _ := getLevels(darkestBackground, ansiColor)
-			ansiColors["ansiBright"+ansiColorName] = themeAnsi
-			ansiVariations, err := generateBrightnessVariations(themeAnsi, 2, spec.ΔETarget, spec.Lstep, darker)
-			if err != nil {
-				return err
-			}
-			ansiDark := ansiVariations[1]
-			if !ansiDark.IsValid() {
-				ansiDark = ansiDark.Clamped()
-			}
-			ansiColors["ansi"+ansiColorName] = ansiDark
-		}
-
-		// generate a color for ui elements based on ui contrast level for
-		// darkest background variation
-		uiElementColor, _, _ := getLevels(darkestBackground, darkestBackground)
-
-		// generate the lightest possible fg color we can use in the main editor
-		// area
-		_, lightFg, _ := getLevels(baseColor, baseColor)
-
-		masterTable[baseColorName] = colorTable{
-			ui:            uiElementColor,
-			bg:            backgroundVariations,
-			fg:            spec.fgColor,
-			lightFg:       lightFg,
-			conceptColors: cColors,
-			ansiColors:    ansiColors,
-		}
+	// get all theme themes
+	themes, err := generateVariants(config, spec)
+	if err != nil {
+		return err
 	}
+	// for targets
+	// do the different generation types here
 
-	for _, baseColor := range spec.themeBases {
-		themeFileSuffix := "-" + strings.ToLower(baseColor)
-		ThemeName := "Clarion " + baseColor
-
-		themeTable := masterTable[baseColor]
-		// Create Template functions
-		colorFuncs := template.FuncMap{
-			"themeName": func() string {
-				return ThemeName
-			},
-			"bg":       tmplBG(themeTable),
-			"fg":       tmplFG(themeTable),
-			"lightfg":  tmplLightFG(themeTable),
-			"uifg":     tmplUIFG(themeTable),
-			"hex":      tmpl2Hex,
-			"hext":     tmpl2HexTrunc,
-			"hexalpha": tmpl2HexAlpha,
-			"term":     tmpl2Term,
-		}
-		for conceptColorName := range themeTable.conceptColors {
-			colorFuncs[conceptColorName] = tmplColor(conceptColorName, themeTable)
-		}
-		for ansiColorName := range themeTable.ansiColors {
-			colorFuncs[ansiColorName] = tmplAnsiColor(ansiColorName, themeTable)
-		}
-		themeFilename := fmt.Sprintf("clarion-color-theme%s.json", themeFileSuffix)
+	for _, theme := range themes {
+		// do the different generation
+		themeFilename := fmt.Sprintf("clarion-color-theme-%s.json", theme.Variant)
 		pkg.ThemeContribs = append(pkg.ThemeContribs, ThemeContrib{
-			Label: ThemeName,
+			Label: theme.ThemeName,
 			File:  themeFilename,
 		})
-		outPath := filepath.Join(outputPath, "themes", themeFilename)
-		outFile, err := os.Create(outPath)
+		outPath := filepath.Join(config.themeRoot, "themes", themeFilename)
+		outFile, err := newFileWriter(outPath)
 		if err != nil {
 			return fmt.Errorf("unable to create output file %q: %v", outPath, err)
 		}
-		tmpl, err := template.New("").Funcs(colorFuncs).ParseFiles("template/clarion-color-theme.json")
+		tmpl, err := template.New("").ParseFiles("templates/clarion-color-theme.json")
 		if err != nil {
 			return fmt.Errorf("template parse error: %v", err)
 		}
-		if err := tmpl.ExecuteTemplate(outFile, "clarion-color-theme.json", nil); err != nil {
+		//
+		if err := tmpl.ExecuteTemplate(outFile, "clarion-color-theme.json", theme); err != nil {
 			return fmt.Errorf("template execution error: %v", err)
 		}
 		outFile.Close()
 	}
-	pkgPath := filepath.Join(outputPath, "package.json")
+	pkgPath := filepath.Join(config.themeRoot, "package.json")
 	outPkg, err := os.Create(pkgPath)
 	if err != nil {
 		return fmt.Errorf("unable to create package output file %q: %v", pkgPath, err)
 	}
 	defer outPkg.Close()
-	tmpl, err := template.New("").ParseFiles("template/package.json.tmpl")
+	tmpl, err := template.New("").ParseFiles("templates/package.json.tmpl")
 	if err != nil {
 		return fmt.Errorf("package template parse error: %v", err)
 	}
@@ -187,41 +70,64 @@ func buildThemes(spec *spec, outputPath string) error {
 		return fmt.Errorf("package template execution error: %v", err)
 	}
 	// generate readme
-	readmePreviews := []map[string]string{}
+	previews := []map[string]string{}
 	for _, base := range spec.themeBases {
-		readmePreviews = append(readmePreviews, map[string]string{
+		previews = append(previews, map[string]string{
 			"themename":  "Clarion " + base,
 			"screenshot": fmt.Sprintf("Clarion-%s.jpg", base),
 		})
 	}
-	sort.Slice(readmePreviews, func(i, j int) bool {
-		if readmePreviews[i]["themename"] == "Clarion White" {
+	sort.Slice(previews, func(i, j int) bool {
+		if previews[i]["themename"] == "Clarion White" {
 			return true
 		}
-		if readmePreviews[j]["themename"] == "Clarion White" {
+		if previews[j]["themename"] == "Clarion White" {
 			return false
 		}
-		return readmePreviews[i]["themename"] < readmePreviews[j]["themename"]
+		return previews[i]["themename"] < previews[j]["themename"]
 	})
-	colorFuncs := template.FuncMap{
-		"hext": tmpl2HexTrunc,
-	}
-	themeTable := masterTable["White"]
-	for conceptColorName := range themeTable.conceptColors {
-		colorFuncs[conceptColorName] = tmplColor(conceptColorName, themeTable)
-	}
 
-	tmpl, err = template.New("").Funcs(colorFuncs).ParseFiles(`template/README.md.tmpl`)
+	readmeData := map[string]interface{}{
+		"previews":  previews,
+		"baseTheme": themes[0],
+	}
+	tmpl, err = template.New("").ParseFiles(`templates/README.md.tmpl`)
 	if err != nil {
 		return err
 	}
-	readmeout, err := os.Create(filepath.Join(outputPath, "README.md"))
+	readmeout, err := os.Create(filepath.Join(config.themeRoot, "README.md"))
 	if err != nil {
 		return err
 	}
 	defer readmeout.Close()
-	if err := tmpl.ExecuteTemplate(readmeout, "README.md.tmpl", readmePreviews); err != nil {
+	if err := tmpl.ExecuteTemplate(readmeout, "README.md.tmpl", readmeData); err != nil {
 		return err
 	}
 	return nil
+}
+
+var commentLine = regexp.MustCompile(`^\s*//`)
+
+func newFileWriter(outputFile string) (io.WriteCloser, error) {
+	output, err := os.Create(outputFile)
+	if err != nil {
+		return nil, err
+	}
+	pr, pw := io.Pipe()
+	go func() {
+		s := bufio.NewScanner(pr)
+		for s.Scan() {
+			if commentLine.MatchString(s.Text()) {
+				continue
+			}
+			output.WriteString(s.Text() + "\n")
+		}
+		if err != nil {
+			panic("scanner: " + err.Error())
+		}
+		if err := output.Close(); err != nil {
+			panic("closing file: " + err.Error())
+		}
+	}()
+	return pw, nil
 }

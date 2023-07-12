@@ -25,16 +25,6 @@
     "contributes": {
         "themes": [
             {
-                "label": "Clarion White",
-                "uiTheme": "vs",
-                "path": "./themes/clarion-color-theme-white.json"
-            },
-            {
-                "label": "Clarion Orange",
-                "uiTheme": "vs",
-                "path": "./themes/clarion-color-theme-orange.json"
-            },
-            {
                 "label": "Clarion Red",
                 "uiTheme": "vs",
                 "path": "./themes/clarion-color-theme-red.json"
@@ -48,6 +38,16 @@
                 "label": "Clarion Peach",
                 "uiTheme": "vs",
                 "path": "./themes/clarion-color-theme-peach.json"
+            },
+            {
+                "label": "Clarion White",
+                "uiTheme": "vs",
+                "path": "./themes/clarion-color-theme-white.json"
+            },
+            {
+                "label": "Clarion Orange",
+                "uiTheme": "vs",
+                "path": "./themes/clarion-color-theme-orange.json"
             }
         ]
     }

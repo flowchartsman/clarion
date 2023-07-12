@@ -1,0 +1,312 @@
+// all bgs are negative, so convert to negative idx
+{
+    "name": "{{.ThemeName}}",
+    "type": "light",
+    "semanticHighlighting": false,
+    "colors": {
+        //{{with .Base }}
+        "window.activeBorder": "{{.Fg.Hex}}",
+        "window.inactiveBorder": "{{.Excluded.Gfx.Hex}}",
+        "titleBar.border": "{{.FgUI.Hex}}",
+        "diffEditor.insertedTextBackground": "{{.Excluded.Gfx.HexAlpha 19}}",
+        "diffEditor.removedTextBackground": "{{.Excluded.Gfx.HexAlpha 19}}",
+        "editor.foreground": "{{.Fg.Hex}}",
+        "editor.background": "{{.Hex}}",
+        "editor.findMatchBackground": "#ffca0099",
+        "editor.findMatchHighlightBackground": "#ffca004c",
+        "editor.focusedStackFrameHighlightBackground": "#f909",
+        "editor.lineHighlightBackground": "{{.Darker.Hex}}",
+        "editor.lineHighlightBorder": "{{.Darker.Darker.Hex}}",
+        "editor.selectionBackground": "{{.Darker.Darker.Hex}}",
+        "editorIndentGuide.activeBackground": "{{.FgUI.Hex}}",
+        "editorIndentGuide.background": "{{.FgUI.HexAlpha 50}}",
+        "editor.selectionForeground": "{{.Hex}}",
+        "editor.selectionHighlightBorder": "{{.Darker.Hex}}",
+        "editor.selectionHighlightBackground": "{{.Darker.Darker.Hex}}",
+        "editor.stackFrameHighlightBackground": "#ff99004c",
+        "editor.wordHighlightBackground": "#0064ff26",
+        "editor.wordHighlightStrongBackground": "#0064ff4c",
+        "editorBracketMatch.background": "{{.Darker.Darker.Hex}}",
+        //"editorCursor.foreground": "#004bff",
+        "editorError.foreground": "{{.Excluded.Gfx.Hex}}",
+        "editorGroup.border": "{{.FgUI.Hex}}",
+        "sash.hoverBorder": "{{.Modified.Gfx.Hex}}",
+        "editorGroupHeader.tabsBackground": "{{.Hex}}",
+        "editorGroupHeader.tabsBorder": "{{.FgUI.Hex}}",
+        "editorGutter.background": "{{.Darker.Hex}}",
+        "editorGutter.addedBackground": "{{.Excluded.Txt.Hex}}",
+        "editorGutter.deletedBackground": "{{.Excluded.Txt.Hex}}",
+        "editorGutter.modifiedBackground": "{{.Modified.Gfx.Hex}}",
+        "editorLineNumber.activeForeground": "{{.Fg.Hex}}",
+        "editorLineNumber.foreground": "{{.Fg.Hex}}",
+        "editorLink.activeForeground": "{{.FgLight.Hex}}",
+        "editorOverviewRuler.addedForeground": "{{.Fg.Hex}}",
+        "editorOverviewRuler.border": "{{.FgUI.Hex}}",
+        "editorOverviewRuler.bracketMatchForeground": "#0064ff4c",
+        "editorOverviewRuler.errorForeground": "{{.Excluded.Gfx.Hex}}",
+        "editorOverviewRuler.findMatchForeground": "#ffca0099",
+        "editorOverviewRuler.modifiedForeground": "{{.Modified.Gfx.Hex}}",
+        "editorOverviewRuler.selectionHighlightForeground": "#0064ff4c",
+        "editorOverviewRuler.warningForeground": "#f90",
+        "editorOverviewRuler.wordHighlightForeground": "#0064ff26",
+        "editorOverviewRuler.wordHighlightStrongForeground": "#0064ff4c",
+        "editorRuler.foreground": "{{.Darker.Hex}}",
+        "editorSuggestWidget.foreground": "{{.Fg.Hex}}",
+        "editorWarning.foreground": "{{.Notice.Gfx.Hex}}",
+        "editorWidget.background": "{{.Darker.Hex}}",
+        "editorWidget.border": "{{.FgUI.Hex}}",
+        "scrollbar.shadow": "{{.Fg.Hex}}",
+        "scrollbarSlider.background": "{{.Fg.Hex}}20",
+        "scrollbarSlider.hoverBackground": "{{.Fg.Hex}}30",
+        "titleBar.activeBackground": "{{.Hex}}",
+        "titleBar.activeForeground": "{{.Fg.Hex}}",
+        "titleBar.inactiveBackground": "{{.Hex}}",
+        "titleBar.inactiveForeground": "{{.Fg.Hex}}",
+        "widget.shadow": "{{.Fg.Hex}}",
+        "settings.headerForeground": "{{.Notice.Txt.Hex}}",
+        "symbolIcon.arrayForeground": "{{.Fg.Hex}}",
+        "symbolIcon.booleanForeground": "{{.Fg.Hex}}",
+        "symbolIcon.classForeground": "{{.Fg.Hex}}",
+        "symbolIcon.colorForeground": "{{.Fg.Hex}}",
+        "symbolIcon.constantForeground": "{{.Fg.Hex}}",
+        "symbolIcon.constructorForeground": "{{.Fg.Hex}}",
+        "symbolIcon.enumeratorForeground": "{{.Fg.Hex}}",
+        "symbolIcon.enumeratorMemberForeground": "{{.Fg.Hex}}",
+        "symbolIcon.eventForeground": "{{.Fg.Hex}}",
+        "symbolIcon.fieldForeground": "{{.Fg.Hex}}",
+        "symbolIcon.fileForeground": "{{.Fg.Hex}}",
+        "symbolIcon.folderForeground": "{{.Fg.Hex}}",
+        "symbolIcon.functionForeground": "{{.Fg.Hex}}",
+        "symbolIcon.interfaceForeground": "{{.Fg.Hex}}",
+        "symbolIcon.keyForeground": "{{.Fg.Hex}}",
+        "symbolIcon.keywordForeground": "{{.Fg.Hex}}",
+        "symbolIcon.methodForeground": "{{.Fg.Hex}}",
+        "symbolIcon.moduleForeground": "{{.Fg.Hex}}",
+        "symbolIcon.namespaceForeground": "{{.Fg.Hex}}",
+        "symbolIcon.nullForeground": "{{.Fg.Hex}}",
+        "symbolIcon.numberForeground": "{{.Fg.Hex}}",
+        "symbolIcon.objectForeground": "{{.Fg.Hex}}",
+        "symbolIcon.operatorForeground": "{{.Fg.Hex}}",
+        "symbolIcon.packageForeground": "{{.Fg.Hex}}",
+        "symbolIcon.propertyForeground": "{{.Fg.Hex}}",
+        "symbolIcon.referenceForeground": "{{.Fg.Hex}}",
+        "symbolIcon.snippetForeground": "{{.Fg.Hex}}",
+        "symbolIcon.stringForeground": "{{.Fg.Hex}}",
+        "symbolIcon.structForeground": "{{.Fg.Hex}}",
+        "symbolIcon.textForeground": "{{.Fg.Hex}}",
+        "symbolIcon.typeParameterForeground": "{{.Fg.Hex}}",
+        "symbolIcon.unitForeground": "{{.Fg.Hex}}",
+        "symbolIcon.variableForeground": "{{.Fg.Hex}}",
+        "errorForeground": "{{.Excluded.Txt.Hex}}",
+        "extensionButton.prominentBackground": "#004bff",
+        "extensionButton.prominentForeground": "{{.Hex}}",
+        "extensionButton.prominentHoverBackground": "#004bff",
+        "focusBorder": "{{.FgUI.Hex}}",
+        "foreground": "{{.Fg.Hex}}",
+        "gitDecoration.ignoredResourceForeground": "{{.Excluded.Txt.Hex}}",
+        "gitDecoration.modifiedResourceForeground": "{{.Modified.Txt.Hex}}",
+        "gitDecoration.untrackedResourceForeground": "{{.Excluded.Txt.Hex}}",
+        "textLink.activeForeground": "{{.Fg.Hex}}",
+        "textLink.foreground": "{{.Fg.Hex}}",
+        //{{end}}
+        //{{with .Bg -1}}
+        "activityBar.background": "{{.Hex}}",
+        "activityBar.border": "{{.FgUI.Hex}}",
+        "activityBar.foreground": "{{.Fg.Hex}}",
+        "activityBarBadge.background": "{{.Fg.Hex}}",
+        "activityBarBadge.foreground": "{{.Lighter.Hex}}",
+        //{{end}}
+        "badge.background": "{{.Base.Fg.Hex}}",
+        "badge.foreground": "{{.Base.Hex}}",
+        "button.background": "{{.Base.Hex}}",
+        "button.foreground": "{{.Base.Fg.Hex}}",
+        "contrastBorder": "{{.Base.FgUI.Hex}}",
+        //{{with .Bg -3}}
+        "debugToolBar.background": "{{.Hex}}",
+        "dropdown.background": "{{.Hex}}",
+        "dropdown.border": "{{.FgUI.Hex}}",
+        "dropdown.foreground": "{{.Fg.Hex}}",
+        //{{end}}
+        //{{with .Bg -2}}
+        "panel.background": "{{.Hex}}",
+        "panel.border": "{{.FgUI.Hex}}",
+        "panel.dropBorder": "{{.Modified.Gfx.Hex}}",
+        "panelTitle.activeForeground": "{{.Fg.Hex}}",
+        "panelTitle.inactiveForeground": "{{.FgLight.Hex}}",
+        "panelTitle.activeBorder": "{{.FgUI.Hex}}",
+        //{{end}}
+        //{{with .Bg -2}}
+        "peekView.border": "{{.FgUI.Hex}}",
+        "peekViewEditor.background": "{{.Hex}}",
+        "peekViewEditor.matchHighlightBackground": "#ffca0099",
+        //{{end}}
+        //{{with .Bg -1}}
+        "peekViewTitle.background": "{{.Hex}}",
+        "peekViewTitleDescription.foreground": "{{.FgLight.Hex}}",
+        "peekViewTitleLabel.foreground": "{{.Fg.Hex}}",
+        //{{end}}
+        //{{with .Bg -2}}
+        "peekViewResult.background": "{{.Hex}}",
+        "peekViewResult.fileForeground": "{{.Fg.Hex}}",
+        "peekViewResult.lineForeground": "{{.FgLight.Hex}}",
+        "peekViewResult.matchHighlightBackground": "#ffca0099",
+        //{{end}}
+        //{{with .Bg -2}}
+        "peekViewResult.selectionBackground": "{{.Hex}}",
+        "peekViewResult.selectionForeground": "{{.Fg.Hex}}",
+        //{{end}}
+        //{{with .Base}}
+        "input.background": "{{.Hex}}",
+        "input.border": "{{.FgUI.Hex}}",
+        "input.foreground": "{{.Fg.Hex}}",
+        "input.placeholderForeground": "{{.FgLight.Hex}}",
+        //{{end}}
+        //{{with .Bg -4}}
+        "list.activeSelectionBackground": "{{.Lighter.Hex}}",
+        "list.activeSelectionForeground": "{{.Lighter.Fg.Hex}}",
+        "list.dropBackground": "{{.Modified.Gfx.HexAlpha 80}}",
+        "list.focusBackground": "{{.Hex}}",
+        "list.focusOutline": "{{.Fg.Hex}}",
+        "list.focusForeground": "{{.Fg.Hex}}",
+        "list.highlightForeground": "{{.Fg.Hex}}",
+        "list.hoverBackground": "{{.Lighter.Hex}}",
+        "list.inactiveSelectionBackground": "{{.Hex}}",
+        "list.inactiveSelectionForeground": "{{.Fg.Hex}}",
+        //{{end}}
+        "progressBar.background": "#004bff",
+        //{{with .Bg -1}}
+        "sideBar.background": "{{.Hex}}",
+        "sideBar.foreground": "{{.Fg.Hex}}",
+        "sideBarSectionHeader.background": "{{.Darker.Darker.Hex}}",
+        "sideBarSectionHeader.foreground": "{{.Fg.Hex}}",
+        "sideBarTitle.foreground": "{{.Fg.Hex}}",
+        //{{end}}
+        //{{with .Bg -4}}
+        "statusBar.background": "{{.Hex}}",
+        "statusBar.debuggingBackground": "#f90",
+        "statusBar.debuggingForeground": "{{.Fg.Hex}}",
+        "statusBar.foreground": "{{.Fg.Hex}}",
+        "statusBar.noFolderBackground": "{{.Fg.Hex}}",
+        //{{end}}
+        //{{with .Base}}
+        "tab.activeBackground": "{{.Darker.Hex}}",
+        "tab.activeForeground": "{{.Fg.Hex}}",
+        "tab.activeModifiedBorder": "{{.Fg.Hex}}",
+        "tab.border": "{{.Fg.Hex}}",
+        "tab.inactiveBackground": "{{.Lighter.Hex}}",
+        "tab.inactiveForeground": "{{.Fg.Hex}}",
+        "tab.inactiveModifiedBorder": "{{.Fg.Hex}}",
+        //{{end}}
+        //{{with .Bg -3}}
+        "terminal.foreground": "{{.AnsiBlack.Hex}}",
+        "terminal.background": "{{.Hex}}",
+        "terminal.border": "{{.FgLight.Hex}}",
+        "terminal.ansiBlack": "{{.AnsiBlack.Hex}}",
+        "terminal.ansiBrightBlack": "{{.AnsiBrBlack.Hex}}",
+        "terminal.ansiBlue": "{{.AnsiBlue.Hex}}",
+        "terminal.ansiBrightBlue": "{{.AnsiBrBlue.Hex}}",
+        "terminal.ansiCyan": "{{.AnsiCyan.Hex}}",
+        "terminal.ansiBrightCyan": "{{.AnsiBrCyan.Hex}}",
+        "terminal.ansiGreen": "{{.AnsiGreen.Hex}}",
+        "terminal.ansiBrightGreen": "{{.AnsiBrGreen.Hex}}",
+        "terminal.ansiMagenta": "{{.AnsiMagenta.Hex}}",
+        "terminal.ansiBrightMagenta": "{{.AnsiBrMagenta.Hex}}",
+        "terminal.ansiRed": "{{.AnsiRed.Hex}}",
+        "terminal.ansiBrightRed": "{{.AnsiBrRed.Hex}}",
+        "terminal.ansiWhite": "{{.AnsiWhite.Hex}}",
+        "terminal.ansiBrightWhite": "{{.AnsiBrWhite.Hex}}",
+        "terminal.ansiYellow": "{{.AnsiYellow.Hex}}",
+        "terminal.ansiBrightYellow": "{{.AnsiBrYellow.Hex}}",
+        "terminal.selectionBackground": "#0064ff4c",
+        "terminalCursor.foreground": "{{.Fg.Hex}}"
+        //{{end}}
+    },
+    "tokenColors": [
+        {
+            "scope": [
+                "comment.block",
+                "comment.block.documentation",
+                "comment.line",
+                "comment",
+                "string.quoted.docstring"
+            ],
+            "settings": {
+                "foreground": "{{.Base.FgLight.Hex}}",
+                "fontStyle": "italic"
+            }
+        },
+        {
+            "scope": [
+                "string"
+            ],
+            "settings": {
+                "fontStyle": "bold"
+            }
+        },
+        {
+            "scope": [
+                "constant.other.placeholder"
+            ],
+            "settings": {
+                "fontStyle": "underline"
+            }
+        },
+        {
+            "scope": [
+                "constant.character.escape"
+            ],
+            "settings": {
+                "fontStyle": "italic"
+            }
+        },
+        {
+            "scope": [
+                "punctuation.definition.string",
+                "storage.type.string.python"
+            ],
+            "settings": {
+                "foreground": "{{.Base.Fg.Hex}}"
+            }
+        },
+        {
+            "scope": [
+                "markup.italic"
+            ],
+            "settings": {
+                "fontStyle": "italic"
+            }
+        },
+        //landmarks
+        {
+            "scope": [
+                "entity.name.section.group-title",
+                "keyword.const",
+                "keyword.function",
+                "keyword.import",
+                "keyword.var",
+                "markup.heading",
+                "storage.type.function",
+                "storage.type.import",
+                "storage.type.namespace",
+                "support.type.object.module",
+                "markup.bold",
+                "markup.inline.raw",
+                "markup.raw.monospace",
+                "markup.fenced_code.block",
+                "keyword.type"
+            ],
+            "settings": {
+                "fontStyle": "bold"
+            }
+        },
+        {
+            "scope": [
+                "support.type.property-name"
+            ],
+            "settings": {
+                "foreground": "{{.Base.Fg.Hex}}",
+                "fontStyle": "bold"
+            }
+        }
+    ]
+}

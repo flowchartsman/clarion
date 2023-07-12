@@ -1,0 +1,18 @@
+---
+targets:
+  vscode:
+    mode: multi
+    input: clarion-color-theme.json
+    output: /themes/clarion-color-theme-{{.themeName | lc}}
+  packagefile:
+    mode: simple
+    input: package.json.tmpl
+    output /package.json
+  readme:
+    mode: simple
+    input: README.md.tmpl
+    output: /README.md
+  nvim:
+    mode: tree
+    input: nvim
+    output: /themes-contrib/clarion.nvim
