@@ -28,8 +28,9 @@ func (tc *themeColor) HexT() string {
 	return tc.Hex()[1:]
 }
 
+// X * Y/100. x percent of y
 func (tc *themeColor) HexAlpha(transPct float64) string {
-	return fmt.Sprintf("%s%02x", tc.Hex(), int(math.Round(float64(transPct)*255.0/100.0)))
+	return fmt.Sprintf("%s%02x", tc.Hex(), int(math.Round(transPct*255.0/100.0)))
 }
 
 func (tc *themeColor) Term256() string {
