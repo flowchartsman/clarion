@@ -46,17 +46,22 @@ func main() {
 		log.Fatalf("cannot use -watch and -makeshots together")
 	}
 	flag.Parse()
-	if len(flag.Args()) != 2 {
-		log.Fatalf("usage: mktheme <spec markdown file> <output directory>")
+	if len(flag.Args()) != 1 {
+		log.Fatalf("usage: mktheme <spec markdown file>")
 	}
 	specPath := flag.Args()[0]
-	outputPath := flag.Args()[1]
 	spec, err := loadSpec(specPath)
 	if err != nil {
 		log.Fatalf("error loading specification: %s", err)
 	}
+
+	config, err := loadConfig()
+	if err != nil {
+		log.Fatalf("loading config: %v", err)
+	}
+
 	themeLog("building themes...")
-	if err := buildThemes(spec, outputPath); err != nil {
+	if err := buildThemes(config, spec); err != nil {
 		themeLogFatal(err)
 	}
 	themeLog("complete!")
@@ -66,13 +71,14 @@ func main() {
 		w.SetMaxEvents(1)
 		w.FilterOps(watcher.Write)
 		w.Add("../SPEC.md")
-		w.Add("template/clarion-color-theme.json")
+		w.Add("../syntaxes")
+		w.Add("templates")
 		go func() {
 			for {
 				select {
 				case <-w.Event:
 					themeLog("rebuilding themes...")
-					if err := buildThemes(spec, outputPath); err != nil {
+					if err := buildThemes(config, spec); err != nil {
 						themeLogFatal(err)
 					}
 					themeLog("complete!")
@@ -88,7 +94,7 @@ func main() {
 		}
 	}
 	if makeScreenshots {
-		if err := buildScreenshots(spec, outputPath); err != nil {
+		if err := buildScreenshots(spec, config.themeRoot); err != nil {
 			themeLogFatal(err)
 		}
 	}

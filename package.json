@@ -15,7 +15,7 @@
         "contrast",
         "science"
     ],
-    "version": "0.0.1",
+    "version": "0.0.1-3-g3381bc7",
     "engines": {
         "vscode": "^1.55.0"
     },
@@ -23,6 +23,13 @@
         "Themes"
     ],
     "contributes": {
+        "grammars": [
+            {
+                "path": "./syntaxes/landmarks.tmLanguage.json",
+                "scopeName": "clarion.landmarks",
+                "injectTo": ["source.go","source.c","source.cpp"]
+            }
+        ],
         "themes": [
             {
                 "label": "Clarion White",

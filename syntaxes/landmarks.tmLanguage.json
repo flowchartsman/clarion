@@ -1,0 +1,19 @@
+{
+    "scopeName": "clarion.landmarks",
+    "injectionSelector": [
+        "L:source.go -string -comment",
+        "L:source.c -string -comment",
+        "L:source.cpp -string -comment"
+    ],
+    "patterns": [
+        {
+            "include": "#landmark-keyword"
+        }
+    ],
+    "repository": {
+        "landmark-keyword": {
+            "match": "\\b(return|break|continue|goto|panic)\\b",
+            "name": "keyword.control.landmark"
+        }
+    }
+}
