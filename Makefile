@@ -29,7 +29,7 @@ screenshots : pkg
 		"Clarion Blue,Clarion-Blue.jpg" \
 		"Clarion Orange,Clarion-Orange.jpg" \
 		"Clarion Peach,Clarion-Peach.jpg" \
-		"Clarion Red,Clarion-Red.jpg" \
+		"Clarion Red,Clarion-Red.jpg"
 
 
 .PHONY: clean
@@ -37,8 +37,6 @@ clean :
 	rm clarion.vsix
 
 .PHONY: install_local
-inst_dir:=$(HOME)/.vscode/extensions/clarion_dev
-install_local :
-	mkdir -p $(inst_dir)
-	cp -r icon.png package.json themes $(inst_dir)
-	@echo "you may wish to restart vscode"
+install_local : pkg
+	code --install-extension clarion.vsix
+	rm clarion.vsix
