@@ -15,7 +15,7 @@
         "contrast",
         "science"
     ],
-    "version": "0.0.1",
+    "version": "0.0.1-2-g088a8c3",
     "engines": {
         "vscode": "^1.55.0"
     },
@@ -23,17 +23,14 @@
         "Themes"
     ],
     "contributes": {
+        "grammars": [
+            {
+                "path": "./syntaxes/landmarks.tmLanguage.json",
+                "scopeName": "clarion.landmarks",
+                "injectTo": ["source.go","source.c","source.cpp"]
+            }
+        ],
         "themes": [
-            {
-                "label": "Clarion Red",
-                "uiTheme": "vs",
-                "path": "./themes/clarion-color-theme-red.json"
-            },
-            {
-                "label": "Clarion Blue",
-                "uiTheme": "vs",
-                "path": "./themes/clarion-color-theme-blue.json"
-            },
             {
                 "label": "Clarion Peach",
                 "uiTheme": "vs",
@@ -48,6 +45,16 @@
                 "label": "Clarion Orange",
                 "uiTheme": "vs",
                 "path": "./themes/clarion-color-theme-orange.json"
+            },
+            {
+                "label": "Clarion Red",
+                "uiTheme": "vs",
+                "path": "./themes/clarion-color-theme-red.json"
+            },
+            {
+                "label": "Clarion Blue",
+                "uiTheme": "vs",
+                "path": "./themes/clarion-color-theme-blue.json"
             }
         ]
     }

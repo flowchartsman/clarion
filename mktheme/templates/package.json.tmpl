@@ -23,6 +23,13 @@
         "Themes"
     ],
     "contributes": {
+        "grammars": [
+            {
+                "path": "./syntaxes/landmarks.tmLanguage.json",
+                "scopeName": "clarion.landmarks",
+                "injectTo": ["source.go","source.c","source.cpp"]
+            }
+        ],
         "themes": [
             {{- range $index, $element := .ThemeContribs}}
             {{- if $index}},{{end}}

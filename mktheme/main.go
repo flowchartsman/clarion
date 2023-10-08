@@ -71,7 +71,8 @@ func main() {
 		w.SetMaxEvents(1)
 		w.FilterOps(watcher.Write)
 		w.Add("../SPEC.md")
-		w.Add("templates/clarion-color-theme.json")
+		w.Add("../syntaxes")
+		w.Add("templates")
 		go func() {
 			for {
 				select {

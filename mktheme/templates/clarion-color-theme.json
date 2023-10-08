@@ -2,7 +2,7 @@
 {
     "name": "{{.ThemeName}}",
     "type": "light",
-    "semanticHighlighting": false,
+    "semanticHighlighting": true,
     "colors": {
         //{{with .Base }}
         "window.activeBorder": "{{.Fg.Hex}}",
@@ -28,7 +28,14 @@
         "editor.wordHighlightStrongBackground": "#0064ff4c",
         "editorBracketMatch.background": "{{.Darker.Darker.Hex}}",
         //"editorCursor.foreground": "#004bff",
-        "editorError.foreground": "{{.Excluded.Gfx.Hex}}",
+        // no squiggles
+        "editorError.foreground": "#00000000",
+        "editorWarning.foreground": "#00000000",
+        "editorInfo.foreground": "#00000000",
+        // block highlights instead
+        "editorInfo.background": "#0000ff20",
+        "editorWarning.background": "{{.Notice.Gfx.HexAlpha 20}}",
+        "editorError.background": "{{.Problem.Gfx.HexAlpha 20}}",
         "editorGroup.border": "{{.FgUI.Hex}}",
         "sash.hoverBorder": "{{.Modified.Gfx.Hex}}",
         "editorGroupHeader.tabsBackground": "{{.Hex}}",
@@ -43,16 +50,16 @@
         "editorOverviewRuler.addedForeground": "{{.Fg.Hex}}",
         "editorOverviewRuler.border": "{{.FgUI.Hex}}",
         "editorOverviewRuler.bracketMatchForeground": "#0064ff4c",
-        "editorOverviewRuler.errorForeground": "{{.Excluded.Gfx.Hex}}",
+        "editorOverviewRuler.errorForeground": "{{.Problem.Gfx.Hex}}",
+        "editorOverviewRuler.warningForeground": "{{.Notice.Gfx.Hex}}",
+        "editorOverviewRuler.infoForeground": "#0000ff",
         "editorOverviewRuler.findMatchForeground": "#ffca0099",
         "editorOverviewRuler.modifiedForeground": "{{.Modified.Gfx.Hex}}",
         "editorOverviewRuler.selectionHighlightForeground": "#0064ff4c",
-        "editorOverviewRuler.warningForeground": "#f90",
         "editorOverviewRuler.wordHighlightForeground": "#0064ff26",
         "editorOverviewRuler.wordHighlightStrongForeground": "#0064ff4c",
         "editorRuler.foreground": "{{.Darker.Hex}}",
         "editorSuggestWidget.foreground": "{{.Fg.Hex}}",
-        "editorWarning.foreground": "{{.Notice.Gfx.Hex}}",
         "editorWidget.background": "{{.Darker.Hex}}",
         "editorWidget.border": "{{.FgUI.Hex}}",
         "scrollbar.shadow": "{{.Fg.Hex}}",
@@ -218,10 +225,50 @@
         "terminal.ansiYellow": "{{.AnsiYellow.Hex}}",
         "terminal.ansiBrightYellow": "{{.AnsiBrYellow.Hex}}",
         "terminal.selectionBackground": "#0064ff4c",
-        "terminalCursor.foreground": "{{.Fg.Hex}}"
+        "terminalCursor.foreground": "{{.Fg.Hex}}",
+        "editorBracketHighlight.foreground1": "{{.Fg.Hex}}",
+        "editorBracketHighlight.foreground2": "{{.Fg.Hex}}",
+        "editorBracketHighlight.foreground3": "{{.Fg.Hex}}",
+        "editorBracketHighlight.foreground4": "{{.Fg.Hex}}",
+        "editorBracketHighlight.foreground5": "{{.Fg.Hex}}",
+        "editorBracketHighlight.foreground6": "{{.Fg.Hex}}",
+        "editorBracketHighlight.unexpectedBracket.foreground": "{{.Fg.Hex}}"
         //{{end}}
     },
+    //{{with .Base}}
+    "semanticTokenColors": {
+        // "namespace": {
+        //     "bold": true,
+        //     "italic": false
+        // },
+        "function.definition": {
+            "fontStyle": "bold"
+        },
+        "type.definition": {
+            "fontStyle": "bold"
+        },
+        "variable.definition": {
+            "foreground": "{{.Fg.HexAlpha 58}}"
+        },
+        "variable.readonly": {
+            "foreground": "{{.Fg.Hex}}",
+            "fontStyle": "italic"
+        },
+        "variable.defaultLibrary": {
+            "foreground": "{{.Fg.Hex}}",
+            "fontStyle": "italic"
+        },
+        "variable": {}
+    },
     "tokenColors": [
+        {
+            "scope": [
+                "string entity.name.import.go"
+            ],
+            "settings": {
+                "foreground": "{{.Fg.Hex}}"
+            }
+        },
         {
             "scope": [
                 "comment.block",
@@ -231,7 +278,9 @@
                 "string.quoted.docstring"
             ],
             "settings": {
-                "foreground": "{{.Base.FgLight.Hex}}",
+                //"foreground": "{{.Darker.Darker.Darker.Hex}}",
+                //"foreground": "{{.FgLight.Hex}}",
+                "foreground": "{{.Fg.HexAlpha 30}}",
                 "fontStyle": "italic"
             }
         },
@@ -240,22 +289,16 @@
                 "string"
             ],
             "settings": {
-                "fontStyle": "bold"
+                "foreground": "{{.FgLight.Hex}}"
             }
         },
         {
             "scope": [
-                "constant.other.placeholder"
-            ],
-            "settings": {
-                "fontStyle": "underline"
-            }
-        },
-        {
-            "scope": [
+                "constant.other.placeholder",
                 "constant.character.escape"
             ],
             "settings": {
+                "foreground": "{{.Fg.Hex}}",
                 "fontStyle": "italic"
             }
         },
@@ -265,7 +308,7 @@
                 "storage.type.string.python"
             ],
             "settings": {
-                "foreground": "{{.Base.Fg.Hex}}"
+                "foreground": "{{.Fg.Hex}}"
             }
         },
         {
@@ -281,9 +324,10 @@
             "scope": [
                 "entity.name.section.group-title",
                 "keyword.const",
-                "keyword.function",
-                "keyword.import",
-                "keyword.var",
+                "keyword.package",
+                //"keyword.function",
+                //"keyword.var",
+                //"keyword.type",
                 "markup.heading",
                 "storage.type.function",
                 "storage.type.import",
@@ -293,7 +337,7 @@
                 "markup.inline.raw",
                 "markup.raw.monospace",
                 "markup.fenced_code.block",
-                "keyword.type"
+                "keyword.control.landmark"
             ],
             "settings": {
                 "fontStyle": "bold"
@@ -304,9 +348,10 @@
                 "support.type.property-name"
             ],
             "settings": {
-                "foreground": "{{.Base.Fg.Hex}}",
+                "foreground": "{{.Fg.Hex}}",
                 "fontStyle": "bold"
             }
         }
     ]
+    // {{end}}
 }

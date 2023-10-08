@@ -1,3 +1,4 @@
+ROOT_DIR := $(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))
 CHDIR_SHELL := $(SHELL)
 define chdir
    $(eval _D=$(firstword $(1) $(@D)))
@@ -5,22 +6,35 @@ define chdir
 endef
 
 .PHONY: all
-all : buildmktheme buildtheme
-
-.PHONY: buildmktheme
-buildmktheme :
-	$(call chdir,mktheme)
-	go build
+all : buildtheme screenshots clean
 
 .PHONY: buildtheme
-buildtheme : buildmktheme
-	$(call chdir,mktheme)
-	./mktheme ../SPEC.md ..
+buildtheme :
+	cd mktheme; go run . ../SPEC.md; cd $(ROOT_DIR)
+
+.PHONY: pkg
+pkg :
+	vsce package -o clarion.vsix
+
+
+.PHONY: screenshots
+screenshots : pkg
+	docker run --rm -t \
+		-v $(ROOT_DIR)/img:/home/codeuser/shots \
+		-v $(ROOT_DIR)/clarion.vsix:/home/codeuser/extensions/clarion.vsix \
+		-v $(ROOT_DIR):/home/codeuser/code \
+		flowchartsman/vscode-docker-screenshots \
+		./makeshots --samplefile mktheme/theme.go --fileline 273 \
+		"Clarion White,Clarion-White.jpg" \
+		"Clarion Blue,Clarion-Blue.jpg" \
+		"Clarion Orange,Clarion-Orange.jpg" \
+		"Clarion Peach,Clarion-Peach.jpg" \
+		"Clarion Red,Clarion-Red.jpg" \
+
 
 .PHONY: clean
 clean :
-	$(call chdir,mktheme)
-	go clean
+	rm clarion.vsix
 
 .PHONY: install_local
 inst_dir:=$(HOME)/.vscode/extensions/clarion_dev
