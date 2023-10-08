@@ -7,7 +7,7 @@
         //{{with .Base }}
         "window.activeBorder": "{{.Fg.Hex}}",
         "window.inactiveBorder": "{{.Excluded.Gfx.Hex}}",
-        "titleBar.border": "{{.FgUI.Hex}}",
+        "titleBar.border": "{{.Fg.Hex}}",
         "diffEditor.insertedTextBackground": "{{.Excluded.Gfx.HexAlpha 19}}",
         "diffEditor.removedTextBackground": "{{.Excluded.Gfx.HexAlpha 19}}",
         "editor.foreground": "{{.Fg.Hex}}",
@@ -18,7 +18,7 @@
         "editor.lineHighlightBackground": "{{.Darker.Hex}}",
         "editor.lineHighlightBorder": "{{.Darker.Darker.Hex}}",
         "editor.selectionBackground": "{{.Darker.Darker.Hex}}",
-        "editorIndentGuide.activeBackground": "{{.FgUI.Hex}}",
+        "editorIndentGuide.activeBackground": "{{.Fg.Hex}}",
         "editorIndentGuide.background": "{{.FgUI.HexAlpha 50}}",
         "editor.selectionForeground": "{{.Hex}}",
         "editor.selectionHighlightBorder": "{{.Darker.Hex}}",
@@ -36,10 +36,10 @@
         "editorInfo.background": "#0000ff20",
         "editorWarning.background": "{{.Notice.Gfx.HexAlpha 20}}",
         "editorError.background": "{{.Problem.Gfx.HexAlpha 20}}",
-        "editorGroup.border": "{{.FgUI.Hex}}",
+        "editorGroup.border": "{{.Fg.Hex}}",
         "sash.hoverBorder": "{{.Modified.Gfx.Hex}}",
         "editorGroupHeader.tabsBackground": "{{.Hex}}",
-        "editorGroupHeader.tabsBorder": "{{.FgUI.Hex}}",
+        "editorGroupHeader.tabsBorder": "{{.Fg.Hex}}",
         "editorGutter.background": "{{.Darker.Hex}}",
         "editorGutter.addedBackground": "{{.Excluded.Txt.Hex}}",
         "editorGutter.deletedBackground": "{{.Excluded.Txt.Hex}}",
@@ -48,7 +48,7 @@
         "editorLineNumber.foreground": "{{.Fg.Hex}}",
         "editorLink.activeForeground": "{{.FgLight.Hex}}",
         "editorOverviewRuler.addedForeground": "{{.Fg.Hex}}",
-        "editorOverviewRuler.border": "{{.FgUI.Hex}}",
+        "editorOverviewRuler.border": "{{.Fg.Hex}}",
         "editorOverviewRuler.bracketMatchForeground": "#0064ff4c",
         "editorOverviewRuler.errorForeground": "{{.Problem.Gfx.Hex}}",
         "editorOverviewRuler.warningForeground": "{{.Notice.Gfx.Hex}}",
@@ -61,7 +61,7 @@
         "editorRuler.foreground": "{{.Darker.Hex}}",
         "editorSuggestWidget.foreground": "{{.Fg.Hex}}",
         "editorWidget.background": "{{.Darker.Hex}}",
-        "editorWidget.border": "{{.FgUI.Hex}}",
+        "editorWidget.border": "{{.Fg.Hex}}",
         "scrollbar.shadow": "{{.Fg.Hex}}",
         "scrollbarSlider.background": "{{.Fg.Hex}}20",
         "scrollbarSlider.hoverBackground": "{{.Fg.Hex}}30",
@@ -108,7 +108,7 @@
         "extensionButton.prominentBackground": "#004bff",
         "extensionButton.prominentForeground": "{{.Hex}}",
         "extensionButton.prominentHoverBackground": "#004bff",
-        "focusBorder": "{{.FgUI.Hex}}",
+        "focusBorder": "{{.Fg.Hex}}",
         "foreground": "{{.Fg.Hex}}",
         "gitDecoration.ignoredResourceForeground": "{{.Excluded.Txt.Hex}}",
         "gitDecoration.modifiedResourceForeground": "{{.Modified.Txt.Hex}}",
@@ -118,7 +118,7 @@
         //{{end}}
         //{{with .Bg -1}}
         "activityBar.background": "{{.Hex}}",
-        "activityBar.border": "{{.FgUI.Hex}}",
+        "activityBar.border": "{{.Fg.Hex}}",
         "activityBar.foreground": "{{.Fg.Hex}}",
         "activityBarBadge.background": "{{.Fg.Hex}}",
         "activityBarBadge.foreground": "{{.Lighter.Hex}}",
@@ -127,23 +127,23 @@
         "badge.foreground": "{{.Base.Hex}}",
         "button.background": "{{.Base.Hex}}",
         "button.foreground": "{{.Base.Fg.Hex}}",
-        "contrastBorder": "{{.Base.FgUI.Hex}}",
+        "contrastBorder": "{{.Base.Fg.Hex}}",
         //{{with .Bg -3}}
         "debugToolBar.background": "{{.Hex}}",
         "dropdown.background": "{{.Hex}}",
-        "dropdown.border": "{{.FgUI.Hex}}",
+        "dropdown.border": "{{.Fg.Hex}}",
         "dropdown.foreground": "{{.Fg.Hex}}",
         //{{end}}
         //{{with .Bg -2}}
         "panel.background": "{{.Hex}}",
-        "panel.border": "{{.FgUI.Hex}}",
+        "panel.border": "{{.Fg.Hex}}",
         "panel.dropBorder": "{{.Modified.Gfx.Hex}}",
         "panelTitle.activeForeground": "{{.Fg.Hex}}",
         "panelTitle.inactiveForeground": "{{.FgLight.Hex}}",
-        "panelTitle.activeBorder": "{{.FgUI.Hex}}",
+        "panelTitle.activeBorder": "{{.Fg.Hex}}",
         //{{end}}
         //{{with .Bg -2}}
-        "peekView.border": "{{.FgUI.Hex}}",
+        "peekView.border": "{{.Fg.Hex}}",
         "peekViewEditor.background": "{{.Hex}}",
         "peekViewEditor.matchHighlightBackground": "#ffca0099",
         //{{end}}
@@ -164,7 +164,7 @@
         //{{end}}
         //{{with .Base}}
         "input.background": "{{.Hex}}",
-        "input.border": "{{.FgUI.Hex}}",
+        "input.border": "{{.Fg.Hex}}",
         "input.foreground": "{{.Fg.Hex}}",
         "input.placeholderForeground": "{{.FgLight.Hex}}",
         //{{end}}

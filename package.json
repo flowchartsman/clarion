@@ -15,7 +15,7 @@
         "contrast",
         "science"
     ],
-    "version": "0.0.1-2-g088a8c3",
+    "version": "0.0.1-3-g3381bc7",
     "engines": {
         "vscode": "^1.55.0"
     },
@@ -31,11 +31,6 @@
             }
         ],
         "themes": [
-            {
-                "label": "Clarion Peach",
-                "uiTheme": "vs",
-                "path": "./themes/clarion-color-theme-peach.json"
-            },
             {
                 "label": "Clarion White",
                 "uiTheme": "vs",
@@ -55,6 +50,11 @@
                 "label": "Clarion Blue",
                 "uiTheme": "vs",
                 "path": "./themes/clarion-color-theme-blue.json"
+            },
+            {
+                "label": "Clarion Peach",
+                "uiTheme": "vs",
+                "path": "./themes/clarion-color-theme-peach.json"
             }
         ]
     }
